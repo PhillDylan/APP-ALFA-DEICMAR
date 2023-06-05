@@ -1,0 +1,6 @@
+export * from './dashboard/Dashboard'
+export * from './dashboard/Dashboard2'
+export * from './dashboard/Dashboard3'
+export * from './dashboard/Dashboard5'
+export * from './dashboard/Agendamentos'
+export * from './dashboard/pagesDirectic/Blog'
