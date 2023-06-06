@@ -79,7 +79,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
   )}
   <div style={{ flexGrow: 1 }}>
     <Typography
-      variant={smDown ? 'h6' : mdDown ? 'h4' : 'h3'}
+      variant={smDown ? 'h6' : mdDown ? 'h6' : 'h3'}
       style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
     >
       {titulo}
@@ -98,7 +98,12 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
 
 
       {barraDeFerramentas && <Box>{barraDeFerramentas}</Box>}
-      <Box flex={1} overflow="auto" >
+      <Box flex={1} overflow="auto"   sx={{
+    color: theme.palette.text.secondary,
+    backgroundImage: `linear-gradient(to right, ${
+      theme.palette.mode === "dark" ? "#434343" : "#FDFBFB"
+    }, ${theme.palette.mode === "dark" ? "#282828" : "#EBEDEE"})`,
+  }}>
         {" "}
         {/* Creating a scrollable container */}
         {children} {/* Rendering the child components */}

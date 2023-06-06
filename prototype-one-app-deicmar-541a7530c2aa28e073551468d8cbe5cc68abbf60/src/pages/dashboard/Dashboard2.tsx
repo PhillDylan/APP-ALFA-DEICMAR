@@ -156,7 +156,7 @@ export const Dashboard2 = () => {
     <>
       <LayoutBaseDePagina titulo="Cadastro Lacre" barraDeFerramentas={<></>}>
         <Divider />
-        <Box height="200vh" >
+        <Box height="100vh" >
         <CardWithGradient variant="outlined">
           <Stack spacing={5}>
             <CardContent>

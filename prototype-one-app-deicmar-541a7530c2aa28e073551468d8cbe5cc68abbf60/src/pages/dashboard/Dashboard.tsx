@@ -252,7 +252,7 @@ export const Dashboard = () => {
     <>
       <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
         <Divider />
-        <Box height="200vh" >
+        <Box height="150vh" overflow='auto'>
         <CardWithGradient>
 
           <Stack spacing={5}>

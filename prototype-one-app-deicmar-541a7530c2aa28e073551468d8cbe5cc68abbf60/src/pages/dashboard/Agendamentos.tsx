@@ -12,6 +12,8 @@ import { useDispatch } from 'react-redux';
 
 
 
+
+
 export const ListagemDeCidades: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { debounce } = useDebounce();
@@ -29,6 +31,14 @@ export const ListagemDeCidades: React.FC = () => {
   const pagina = useMemo(() => {
     return Number(searchParams.get('pagina') || '1');
   }, [searchParams]);
+
+
+  const cellStyle = {
+    background: theme.palette.mode !== 'dark'
+      ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
+      : 'linear-gradient(to right, #282828, #434343)',
+    color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -66,6 +76,7 @@ export const ListagemDeCidades: React.FC = () => {
   const handleConfirmDelete = (id: number) => {
     setIsDialogOpen(false);
   };
+  
 
   return (
     <LayoutBaseDePagina
@@ -75,28 +86,13 @@ export const ListagemDeCidades: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell width={100} sx={{
-                background: theme.palette.mode !== 'dark'
-                  ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
-                  : 'linear-gradient(to right, #282828, #434343)',
-                color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
-              }}>
+              <TableCell width={100} sx={cellStyle}>
                 Ações
               </TableCell>
-              <TableCell sx={{
-                background: theme.palette.mode !== 'dark'
-                  ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
-                  : 'linear-gradient(to right, #282828, #434343)',
-                color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
-              }}>
+              <TableCell sx={cellStyle}>
                 ID Agendamento
               </TableCell>
-              <TableCell sx={{
-                background: theme.palette.mode !== 'dark'
-                  ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
-                  : 'linear-gradient(to right, #282828, #434343)',
-                color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
-              }}>
+              <TableCell sx={cellStyle}>
                 ID Operador
               </TableCell>
             </TableRow>
@@ -104,30 +100,15 @@ export const ListagemDeCidades: React.FC = () => {
           <TableBody>
             {rows.map(row => (
               <TableRow key={row.id}>
-                <TableCell sx={{
-                  background: theme.palette.mode !== 'dark'
-                    ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
-                    : 'linear-gradient(to right, #282828, #434343)',
-                  color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
-                }}>
+                <TableCell sx={cellStyle}>
                   <IconButton size="small" onClick={() => handleEdit(row.idagendamento)}>
                     <Icon>edit</Icon>
                   </IconButton>
                 </TableCell>
-                <TableCell sx={{
-                  background: theme.palette.mode !== 'dark'
-                    ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
-                    : 'linear-gradient(to right, #282828, #434343)',
-                  color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
-                }}>
+                <TableCell sx={cellStyle}>
                   {row.idagendamento}
                 </TableCell>
-                <TableCell sx={{
-                  background: theme.palette.mode !== 'dark'
-                    ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
-                    : 'linear-gradient(to right, #282828, #434343)',
-                  color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
-                }}>
+                <TableCell sx={cellStyle}>
                   {row.idoperador}
                 </TableCell>
               </TableRow>

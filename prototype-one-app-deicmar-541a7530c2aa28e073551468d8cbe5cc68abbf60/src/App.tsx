@@ -4,6 +4,10 @@ import { AppDrawerProvider, AppThemeProvider, AuthProvider } from "./shared/cont
 import { MenuLateral, Login } from "./shared/components";
 import { Provider } from "react-redux";
 import store from "./pages/dashboard/store";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 
 
@@ -15,6 +19,7 @@ export const App = () => {
         <AppThemeProvider>
           <Login> {}
             <AppDrawerProvider>
+            <ToastContainer />
               <BrowserRouter>
                 <MenuLateral>
                   <AppRoutes />

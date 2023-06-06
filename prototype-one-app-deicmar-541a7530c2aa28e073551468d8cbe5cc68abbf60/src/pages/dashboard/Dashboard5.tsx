@@ -31,6 +31,9 @@ import { useLocation } from "react-router-dom";
 import { Enviroment } from "../../shared/environment";
 import Cookies from 'js-cookie';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
@@ -92,6 +95,12 @@ export const Dashboard5 = () => {
   const COOKIE_KEY__GATE = 'APP_GATE';
 
 
+  // Estilos personalizados para o alerta
+  const alertStyle = {
+    background: 'green',
+    color: 'white',
+  };
+
   useEffect(() => {
 
     const tipoGate = Cookies.get(COOKIE_KEY__GATE);
@@ -145,7 +154,7 @@ export const Dashboard5 = () => {
         titulo="BUSCAR AGENDAMENTO"
         barraDeFerramentas={<></>}
       >
-        <Box height="100vh">
+        <Box height="90vh">
         <CardWithGradient >
             <Stack spacing={5}>
               <CardContent>
@@ -220,6 +229,7 @@ export const Dashboard5 = () => {
                             setMensagemEnvio(data.message);
                             setErroEnvio(undefined);
                             handleFetchResult(data);
+                            toast.success(data.message, { style: alertStyle });
                             navigate("/checklist");
                           } else {
                             setSeverity("error");
