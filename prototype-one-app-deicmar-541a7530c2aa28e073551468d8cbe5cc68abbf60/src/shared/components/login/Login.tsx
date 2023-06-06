@@ -11,7 +11,7 @@ import { CadastroSenha } from './CadastroSenha';
 
 
 const loginSchema = yup.object().shape({
-  email: yup.string().email().required(),
+  email: yup.string().required(),
   password: yup.string().required().min(5),
 });
 
@@ -35,6 +35,14 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
   const [redirectToNewPassword, setRedirectToNewPassword] = useState(false);
 
 
+  React.useEffect(() => {
+    if (email.trim().includes(' ')) {
+      setEmailError('O Login não pode conter espaços em branco');
+    } else {
+      setEmailError('');
+    }
+  }, [email]);
+  
   const handleFetchResult = (sucesso: boolean, mensagem: string) => {
     setMensagemEnvio(mensagem);
     setSeverity(sucesso ? "success" : "error");
@@ -94,7 +102,7 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
             <TextField
               fullWidth
               type='email'
-              label='Email'
+              label='Login'
               value={email}
               disabled={isLoading}
               error={!!emailError}
@@ -102,6 +110,7 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
               onKeyDown={() => setEmailError('')}
               onChange={e => setEmail(e.target.value)}
             />
+
 
             <TextField
               fullWidth

@@ -80,6 +80,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
     Cookies.remove(COOKIE_KEY__GATE);
     Cookies.remove(COOKIE_KEY__FIRST_ACCESS);
+    
 
     setAccessToken(undefined);
     setIdOperador(undefined);

@@ -161,7 +161,7 @@ export const NewPost = ({
             style={{ width: "295px", height: "412px" }}
           />
           <Typography>
-            <p>No face detected</p>
+            <p>Sem rosto detectada</p>
           </Typography>
         </div>
       )}
@@ -182,7 +182,7 @@ export const NewPost = ({
             width={50}
           />
           <Typography>
-            <p>Detecting Face...</p>
+            <p>Detectando o rosto...</p>
           </Typography>
         </div>
       )}

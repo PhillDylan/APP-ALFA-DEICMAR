@@ -13,7 +13,7 @@ import { Box } from "@mui/system";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useAppDrawerContext } from "../contexts";
 import Speed from "../../shared/assets/img/Speed.png";
-import deicmar from "../../shared/assets/img/deicmar.png"
+import bandeirantesDeicmar from "../../shared/assets/img/bandeirantesDeicmar.png"
 
 
 interface ILayoutBaseDePaginaProps {
@@ -87,7 +87,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
   </div>
   <Grid container alignItems="center" justifyContent="flex-end">
     <img
-      src={deicmar}
+      src={Speed}
       style={{ width: smDown ? '50px' : '100px', height: 'auto' }}
       alt=""
     />
@@ -119,7 +119,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
         elevation={24}
       >
         <Grid item>
-          <img src={Speed} style={{ width: "200px", height: "100%" }} alt="" />{" "}
+          <img src={bandeirantesDeicmar} style={{ width: "200px", height: "100%" }} alt="" />{" "}
           {/* Displaying an image */}
         </Grid>
       </Grid>

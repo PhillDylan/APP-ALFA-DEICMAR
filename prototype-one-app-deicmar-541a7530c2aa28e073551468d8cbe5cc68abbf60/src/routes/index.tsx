@@ -8,7 +8,6 @@ export const AppRoutes = () => {
   useEffect(() => {
     setDrawerOptions([
       { icon: "fact_check", path: "/direct", label: "Escolher Gate" },
-      { icon: "fact_check", path: "/lista-agendamento", label: "Ultimos checklists" },
     ]);
   }, []);
 

@@ -51,7 +51,12 @@ export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => {
     return decryptedData;
   };
 
+
   const handleSubmit = () => {
+    if (password.length < 5) {
+      setPasswordError('A senha deve ter pelo menos 5 caracteres');
+      return;
+    }
     setIsLoading(true);
     Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
 
@@ -86,6 +91,8 @@ export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => {
         setIsLoading(false);
         handleFetchResult(false, 'Erro ao cadastrar nova senha');
       });
+          // Limpe o erro de senha se a validação for bem-sucedida
+    setPasswordError('');
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -98,7 +105,7 @@ export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => {
 
           <TextField
             fullWidth
-            label="Email"
+            label="Login"
             value={email}
             disabled
             sx={{ mb: 2 }}

@@ -93,6 +93,7 @@ export const Dashboard5 = () => {
 
   
   const COOKIE_KEY__GATE = 'APP_GATE';
+  
 
 
   // Estilos personalizados para o alerta

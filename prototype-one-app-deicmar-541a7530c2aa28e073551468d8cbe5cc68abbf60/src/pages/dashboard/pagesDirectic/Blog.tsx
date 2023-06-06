@@ -27,7 +27,7 @@ const featuredPosts = [
     image: "",
     imageLabel: "",
     gate: 'IN',
-    icon: <LoginIcon sx={{ width: '100%', height: '100%' }} />,
+    icon: <LogoutIcon sx={{ width: '100%', height: '100%', transform: 'rotate(180deg)' }} />,
   },
   // ...
   {

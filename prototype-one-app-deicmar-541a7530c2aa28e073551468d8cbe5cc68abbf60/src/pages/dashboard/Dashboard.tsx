@@ -89,6 +89,8 @@ export const Dashboard = () => {
     dispatch({ type: "SET_MENSAGEM_FETCH", payload: sucesso });
   };
 
+  const [enviando, setEnviando] = useState(false); // Nova variável de estado
+
   const ValidadorCPF = (cpf: any) => {
     // inicia as variaveis que serão ultilizadas no codigo
     var Soma: any,
@@ -446,7 +448,7 @@ export const Dashboard = () => {
               <Grid item>
 
               <Link to="/checklist">
-                  <Button size="large" variant="contained">
+                  <Button size="large" variant="contained"   disabled={enviando}>
                     VOLTAR
                   </Button>
                 </Link>
@@ -466,6 +468,7 @@ export const Dashboard = () => {
                   }
                   onClick={async () => {
                     setStatusEnvio("enviando");
+                    setEnviando(true); // Ativa o estado de "enviando"
                     const username = "admin";
                     const password = "speed12345";
                     const token = btoa(`${username}:${password}`);
@@ -485,6 +488,7 @@ export const Dashboard = () => {
                       .then((data) => {
                         if (data.status === "Success") {
                           setStatusEnvio("pronto");
+                          setEnviando(false);
                           setNome("");
                           setSobrenome("");
                           setCpf("");
@@ -502,6 +506,8 @@ export const Dashboard = () => {
                           setStatusEnvio("erro");
                           setErroEnvio(undefined);
                           handleFetchResult(false, data.message);
+                          setEnviando(false);
+
                         }
                       })
                       .catch((error) => {
@@ -510,6 +516,8 @@ export const Dashboard = () => {
                         setOpen(true);
                         setStatusEnvio("erro");
                         setErroEnvio(error.message);
+                        setEnviando(false);
+
                       });
                   }}
                 >
