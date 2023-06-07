@@ -90,6 +90,8 @@ export const Dashboard3 = () => {
   const COOKIE_KEY__ID_OPERADOR = "APP_ID_OPERADOR";
   const COOKIE_KEY__NOME_OPERADOR = "APP_NOME_OPERADOR";
   const numero = 1;
+  const [statusEnvio, setStatusEnvio] = useState("certo");
+
 
   // Estilos personalizados para o alerta
   const alertStyle = {
@@ -97,7 +99,27 @@ export const Dashboard3 = () => {
     color: 'white',
   };
 
+  const [touchCount, setTouchCount] = useState(0);
 
+  useEffect(() => {
+    const handleTouchMove = () => {
+      setTouchCount((prevCount) => prevCount + 1);
+    };
+  
+    document.addEventListener("touchend", handleTouchMove);
+  
+    const handleBeforeUnload = (event: { preventDefault: () => void; returnValue: string; }) => {
+      event.preventDefault();
+      event.returnValue = ''; // Some browsers require a return value for this property
+    };
+  
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  
+    return () => {
+      document.removeEventListener("touchend", handleTouchMove);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   
 
   useEffect(() => {
@@ -117,10 +139,12 @@ export const Dashboard3 = () => {
       navigate("/agendamento2", { replace: true });
       return;
     }
-  }, [listaItens, dadosFetch, navigate]);
+    console.log(mensagemFetch, dadosFetch?.data[numero].face ) 
+  }, [listaItens, dadosFetch, navigate,mensagemFetch]);
 
   const enviarDados = () => {
     console.log("dados", dadosFetch?.data[numero].id);
+    setStatusEnvio("enviando");
     // Restante do código do envio dos dados
     // ...
 
@@ -209,6 +233,7 @@ export const Dashboard3 = () => {
         }
       })
       .then((data) => {
+        setStatusEnvio("pronto");
         if (
           data.agendamento &&
           data.agendamento.message === "Agendamento cadastrado"
@@ -216,6 +241,7 @@ export const Dashboard3 = () => {
           toast.success(data.agendamento.message, { style: alertStyle });
           navigate("/agendamento2");
         } else {
+          setStatusEnvio("erro");
           setAlertSeverity("error");
           setSeverity("error");
           setOpen(true);
@@ -227,6 +253,7 @@ export const Dashboard3 = () => {
         console.log(data);
       })
       .catch((error) => {
+        setStatusEnvio("erro");
         setAlertSeverity("error");
         setAlertMessage(error.message);
         console.error(error);
@@ -276,9 +303,9 @@ export const Dashboard3 = () => {
         }
       >
         <Divider />
-        <Box height="75vh">
-          <CardWithGradient>
-            <Stack spacing={0}>
+        <Box height="80vh" display="flex" flexDirection="column">
+          <CardWithGradient sx={{ flex: 1, overflow: "auto" }}>
+            <Stack spacing={5}>
               <CardContent sx={{ textAlign: "center" }}>
                 <TableContainer
                   component={Paper}
@@ -363,17 +390,15 @@ export const Dashboard3 = () => {
                         <TableCell>Cadastro Facial</TableCell>
                         <TableCell>
                           <Box marginLeft="auto">
+                          {mensagemFetch === false && dadosFetch?.data[numero].face === false  && (
                             <Link to="/cadastro-facial">
                               <Button
                                 variant="contained"
-                                disabled={
-                                  mensagemFetch === true ||
-                                  dadosFetch?.data[numero].face === true
-                                }
                               >
                                 CRIAR
                               </Button>
                             </Link>
+                            )} 
                           </Box>
                         </TableCell>
                       </TableRow>
@@ -402,11 +427,14 @@ export const Dashboard3 = () => {
                     {erroEnvio || mensagemEnvio}
                   </Alert>
                 </Collapse>
-                <Link to="/agendamento2">
-                  <Button size="large" variant="contained">
-                    VOLTAR
-                  </Button>
-                </Link>
+
+                {statusEnvio !== 'enviando' && statusEnvio !== 'erro'  && (
+                  <Link to="/agendamento2">
+                    <Button size="large" variant="contained">
+                      VOLTAR
+                    </Button>
+                  </Link>
+                  )}
 
                 <Button
                   variant="contained"
@@ -414,10 +442,17 @@ export const Dashboard3 = () => {
                   onClick={enviarDados}
                   disabled={
                     !greenChecked ||
-                    (!mensagemFetch && dadosFetch?.data[numero].face === false)
+                    (!mensagemFetch && dadosFetch?.data[numero].face === false) ||
+                    statusEnvio === 'enviando'
                   }
                 >
-                  ENVIAR
+                  {statusEnvio === "enviando"
+                    ? "ENVIANDO..."
+                    : statusEnvio === "pronto"
+                    ? "ENVIADO"
+                    : statusEnvio === "erro"
+                    ? "REENVIAR"
+                    : "ENVIAR"}
                 </Button>
               </CardContent>
             </Stack>

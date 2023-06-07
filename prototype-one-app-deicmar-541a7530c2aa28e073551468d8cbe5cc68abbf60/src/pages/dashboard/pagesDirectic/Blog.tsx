@@ -8,8 +8,10 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { LayoutBaseDePagina } from "../../../shared/layouts";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import LoginIcon from '@mui/icons-material/Login';
+import StartIcon from '@mui/icons-material/Start';
 import LogoutIcon from '@mui/icons-material/Logout';
+import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
+
 
 import FeaturedPost from "./FeaturedPost";
 
@@ -27,7 +29,7 @@ const featuredPosts = [
     image: "",
     imageLabel: "",
     gate: 'IN',
-    icon: <LogoutIcon sx={{ width: '100%', height: '100%', transform: 'rotate(180deg)' }} />,
+    icon: <KeyboardTabIcon sx={{ width: '100%', height: '100%', transform: 'rotate(180deg)' }} />,
   },
   // ...
   {
@@ -36,7 +38,7 @@ const featuredPosts = [
     description: '',
     path: '/agendamento2',
     gate:'OUT',
-    icon: <LogoutIcon sx={{ width: '100%', height: '100%' }} />,
+    icon: <StartIcon sx={{ width: '100%', height: '100%' }} />,
   },
 ];
 

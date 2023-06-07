@@ -30,6 +30,8 @@ import Stack from "@mui/material/Stack";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Enviroment } from "../../shared/environment";
+import debounce from "lodash.debounce"; // Importe o debounce do pacote lodash.debounce
+
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -90,6 +92,30 @@ export const Dashboard = () => {
   };
 
   const [enviando, setEnviando] = useState(false); // Nova variável de estado
+
+  const [touchCount, setTouchCount] = useState(0);
+
+  useEffect(() => {
+    const handleTouchMove = () => {
+      setTouchCount((prevCount) => prevCount + 1);
+    };
+  
+    document.addEventListener("touchend", handleTouchMove);
+  
+    const handleBeforeUnload = (event: { preventDefault: () => void; returnValue: string; }) => {
+      event.preventDefault();
+      event.returnValue = ''; // Some browsers require a return value for this property
+    };
+  
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  
+    return () => {
+      document.removeEventListener("touchend", handleTouchMove);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+
 
   const ValidadorCPF = (cpf: any) => {
     // inicia as variaveis que serão ultilizadas no codigo
@@ -250,14 +276,52 @@ export const Dashboard = () => {
 
   const theme = useTheme();
 
+
+  const handleNomeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNome(event.target.value.toUpperCase());
+  };
+
+  const handleSobrenomeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSobrenome(event.target.value.toUpperCase());
+  };
+
+  const handleCPFChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputCPF = event.target.value.replace(/[^\d]/g, "");
+    let formattedCPF = "";
+
+    if (inputCPF.length <= 3) {
+      formattedCPF = inputCPF;
+    } else if (inputCPF.length <= 6) {
+      formattedCPF = inputCPF.substr(0, 3) + "." + inputCPF.substr(3);
+    } else if (inputCPF.length <= 9) {
+      formattedCPF =
+        inputCPF.substr(0, 3) +
+        "." +
+        inputCPF.substr(3, 3) +
+        "." +
+        inputCPF.substr(6);
+    } else {
+      formattedCPF =
+        inputCPF.substr(0, 3) +
+        "." +
+        inputCPF.substr(3, 3) +
+        "." +
+        inputCPF.substr(6, 3) +
+        "-" +
+        inputCPF.substr(9);
+    }
+
+    setCpf(formattedCPF);
+    setStatusEnvio("certo");
+  };
+
   return (
     <>
       <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
         <Divider />
-        <Box height="150vh" overflow='auto'>
-        <CardWithGradient>
-
-          <Stack spacing={5}>
+        <Box height="100vh" display="flex" flexDirection="column">
+          <CardWithGradient sx={{ flex: 1, overflow: "auto" }}>
+            <Stack spacing={5}>
             <CardContent>
             <Item>
               {image ? (
@@ -324,10 +388,7 @@ export const Dashboard = () => {
                   label={<Typography>OBRIGATORIO</Typography>}
                   margin={"normal"}
                   value={nome}
-                  onChange={(event) => {
-                    setNome(event.target.value.toUpperCase()); // Converter o texto para caixa alta
-                    setStatusEnvio("certo");
-                  }}
+                  onChange={handleNomeChange}
                   helperText={<Typography>Digite o nome</Typography>}
                   inputProps={{
                     style: {
@@ -335,35 +396,30 @@ export const Dashboard = () => {
                     },
                   }}
                 />
-
               </Grid>
               <Grid
                 item
                 paddingX={{ xs: theme.spacing(5), md: theme.spacing(20) }}
                 textAlign="center"
               >
-                <TextField
-                  fullWidth
-                  placeholder="SOBRENOME"
-                  error={sobrenome.length < 3}
-                  required
-                  id="outlined-required"
-                  label={<Typography>OBRIGATORIO</Typography>}
-                  value={sobrenome}
-                  InputLabelProps={{ shrink: true }}
-                  margin={"normal"}
-                  onChange={(event) => {
-                    setSobrenome(event.target.value.toUpperCase()); // Converter o texto para caixa alta
-                    setStatusEnvio("certo");
-                  }}
-                  helperText={<Typography>Digite o Sobrenome</Typography>}
-                  inputProps={{
-                    style: {
-                      textAlign: "center", // Centralizar o texto
-                    },
-                  }}
-                />
-
+               <TextField
+                fullWidth
+                placeholder="SOBRENOME"
+                error={sobrenome.length < 3}
+                required
+                id="outlined-required"
+                label={<Typography>OBRIGATORIO</Typography>}
+                value={sobrenome}
+                InputLabelProps={{ shrink: true }}
+                margin={"normal"}
+                onChange={handleSobrenomeChange}
+                helperText={<Typography>Digite o Sobrenome</Typography>}
+                inputProps={{
+                  style: {
+                    textAlign: "center", // Centralizar o texto
+                  },
+                }}
+              />
               </Grid>
               <Grid
                 item
@@ -379,37 +435,8 @@ export const Dashboard = () => {
                   type="tel"
                   InputLabelProps={{ shrink: true }}
                   value={cpf}
-                  onChange={(event) => {
-                    const inputCPF = event.target.value.replace(/[^\d]/g, ""); // Remove caracteres não numéricos
-                    let formattedCPF = "";
-                    if (inputCPF.length <= 3) {
-                      formattedCPF = inputCPF;
-                    } else if (inputCPF.length <= 6) {
-                      formattedCPF =
-                        inputCPF.substr(0, 3) + "." + inputCPF.substr(3);
-                    } else if (inputCPF.length <= 9) {
-                      formattedCPF =
-                        inputCPF.substr(0, 3) +
-                        "." +
-                        inputCPF.substr(3, 3) +
-                        "." +
-                        inputCPF.substr(6);
-                    } else {
-                      formattedCPF =
-                        inputCPF.substr(0, 3) +
-                        "." +
-                        inputCPF.substr(3, 3) +
-                        "." +
-                        inputCPF.substr(6, 3) +
-                        "-" +
-                        inputCPF.substr(9);
-                    }
-                    setCpf(formattedCPF);
-                    setStatusEnvio("certo");
-                  }}
-                  inputProps={{ maxLength: 14, style: {
-                    textAlign: "center", // Centralizar o texto
-                  },}}
+                  onChange={handleCPFChange}
+                  inputProps={{ maxLength: 14, style: { textAlign: "center" } }}
                   helperText={
                     !ValidadorCPF(cpf) ? (
                       <Typography>"Digite um CPF válido"</Typography>
@@ -417,7 +444,6 @@ export const Dashboard = () => {
                       <Typography>"Digite o CPF"</Typography>
                     )
                   }
-                  
                 />
               </Grid>
               <Grid item>
@@ -447,27 +473,41 @@ export const Dashboard = () => {
               </Grid>
               <Grid item>
 
+            {statusEnvio !== 'enviando' && (
               <Link to="/checklist">
-                  <Button size="large" variant="contained"   disabled={enviando}>
-                    VOLTAR
-                  </Button>
-                </Link>
+                <Button size="large" variant="contained">
+                  VOLTAR
+                </Button>
+              </Link>
+            )}
 
-                <Button
-                  size="large"
-                  variant="contained"
-                  endIcon={<SendIcon />}
-                  disabled={
-                    !nome ||
-                    !sobrenome ||
-                    !cpf ||
-                    statusEnvio === "enviando" ||
-                    open === true ||
-                    temErro ||
-                    !imagemBase64
-                  }
-                  onClick={async () => {
-                    setStatusEnvio("enviando");
+          <Button
+            size="large"
+            variant="contained"
+            endIcon={<SendIcon />}
+            disabled={
+              !nome ||
+              !sobrenome ||
+              !cpf ||
+              statusEnvio === "enviando" ||
+              open === true ||
+              temErro ||
+              !imagemBase64
+            }
+            onClick={async () => {
+              if (
+                !nome ||
+                !sobrenome ||
+                !cpf ||
+                statusEnvio === "enviando" ||
+                open === true ||
+                temErro ||
+                !imagemBase64
+              ) {
+                return; // Impede a execução do código quando o botão estiver desabilitado
+              }
+
+              setStatusEnvio("enviando");
                     setEnviando(true); // Ativa o estado de "enviando"
                     const username = "admin";
                     const password = "speed12345";
@@ -519,16 +559,18 @@ export const Dashboard = () => {
                         setEnviando(false);
 
                       });
-                  }}
-                >
-                  {statusEnvio === "enviando"
-                    ? "ENVIANDO..."
-                    : statusEnvio === "pronto"
-                    ? "ENVIADO"
-                    : statusEnvio === "erro"
-                    ? "REENVIAR"
-                    : "ENVIAR"}
-                </Button>
+
+            }}
+          >
+            {statusEnvio === "enviando"
+              ? "ENVIANDO..."
+              : statusEnvio === "pronto"
+              ? "ENVIADO"
+              : statusEnvio === "erro"
+              ? "REENVIAR"
+              : "ENVIAR"}
+          </Button>
+
               </Grid>
           </Item>
           </CardContent>

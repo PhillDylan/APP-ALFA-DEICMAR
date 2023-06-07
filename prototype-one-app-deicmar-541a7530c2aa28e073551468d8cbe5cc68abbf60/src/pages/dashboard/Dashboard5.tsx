@@ -155,8 +155,8 @@ export const Dashboard5 = () => {
         titulo="BUSCAR AGENDAMENTO"
         barraDeFerramentas={<></>}
       >
-        <Box height="90vh">
-        <CardWithGradient >
+        <Box height="100vh" display="flex" flexDirection="column">
+          <CardWithGradient sx={{ flex: 1, overflow: "auto" }}>
             <Stack spacing={5}>
               <CardContent>
                 <Item>

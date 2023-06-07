@@ -30,6 +30,8 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
+import debounce from "lodash.debounce"; // Importe o debounce do pacote lodash.debounce
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -69,6 +71,28 @@ export const Dashboard2 = () => {
   const listaItens = useSelector((state: RootState) => state.listaItens); // Obter o estado da lista de itens do Redux
   const imageRef = useRef<HTMLImageElement>(null);
   const dispatch = useDispatch();
+
+  const [touchCount, setTouchCount] = useState(0);
+
+  useEffect(() => {
+    const handleTouchMove = () => {
+      setTouchCount((prevCount) => prevCount + 1);
+    };
+  
+    document.addEventListener("touchend", handleTouchMove);
+  
+    const handleBeforeUnload = (event: { preventDefault: () => void; returnValue: string; }) => {
+      event.preventDefault();
+      event.returnValue = ''; // Some browsers require a return value for this property
+    };
+  
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  
+    return () => {
+      document.removeEventListener("touchend", handleTouchMove);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   useEffect(() => {
     const getImage = () => {
@@ -150,15 +174,20 @@ export const Dashboard2 = () => {
     dispatch({ type: "SET_LISTA_ITENS", payload: novoItem }); // Atualizar o estado do Redux removendo o item
   };
 
+
+  const handleLacreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLacre(event.target.value.toUpperCase());
+  };
+
   const theme = useTheme();
 
   return (
     <>
       <LayoutBaseDePagina titulo="Cadastro Lacre" barraDeFerramentas={<></>}>
         <Divider />
-        <Box height="100vh" >
-        <CardWithGradient variant="outlined">
-          <Stack spacing={5}>
+        <Box height="100vh" display="flex" flexDirection="column">
+          <CardWithGradient sx={{ flex: 1, overflow: "auto" }}>
+            <Stack spacing={5}>
             <CardContent>
               <Item>
                 <Grid item>
@@ -201,9 +230,7 @@ export const Dashboard2 = () => {
                     value={lacre}
                     InputLabelProps={{ shrink: true }}
                     margin={"normal"}
-                    onChange={(event) => {
-                      setLacre(event.target.value.toUpperCase()); // Converter o texto para caixa alta
-                    }}
+                    onChange={handleLacreChange}
                     helperText={<Typography>Digite o Lacre</Typography>}
                     inputProps={{
                       style: {
