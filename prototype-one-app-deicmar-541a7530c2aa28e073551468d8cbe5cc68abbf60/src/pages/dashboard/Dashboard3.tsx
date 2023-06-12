@@ -210,8 +210,8 @@ export const Dashboard3 = () => {
       }
     }
 
-    const username: any = "admin";
-    const password: any = "speed12345"; // substitua isso pela senha descriptografada
+    const username = Enviroment.USERNAME;
+    const password = Enviroment.PASSWORD; // substitua isso pela senha descriptografada
     const token: any = btoa(`${username}:${password}`);
     var options: any = {
       method: "POST",

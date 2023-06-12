@@ -3,8 +3,8 @@ import axios from 'axios';
 import { responseInterceptor, errorInterceptor } from './interceptors';
 import { Enviroment } from '../../../environment';
 
-const username = "admin";
-const password = "speed12345";
+const username = Enviroment.USERNAME;
+const password = Enviroment.PASSWORD;
 const token = btoa(`${username}:${password}`);
 
 const Api = axios.create({

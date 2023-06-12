@@ -63,8 +63,8 @@ export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => {
     // Fazer a requisição para cadastrar nova senha e obter o access_token
 
     // Exemplo fictício:
-    const username = "admin";
-    const userPassword = "speed12345";
+    const username = Enviroment.USERNAME;
+    const userPassword = Enviroment.PASSWORD;
     const token = btoa(`${username}:${userPassword}`);
     const concatenatedData = `${email}:${password}`; // Use a senha original, não o hash
     const encryptedData = encrypt(concatenatedData);

@@ -198,8 +198,8 @@ export const Dashboard = () => {
   };
 
   useEffect(() => {
-    const username = "admin";
-    const password = "speed12345";
+    const username = Enviroment.USERNAME;
+    const password = Enviroment.PASSWORD;
     const token = btoa(`${username}:${password}`);
     fetch(`${Enviroment.URL_BASE}/api/groupsid`, { //api/groupsid
       method: "GET",
@@ -530,8 +530,8 @@ const helperTextCPF = !ValidadorCPF(cpf) ? "Digite um CPF válido" : mensagemCPF
 
               setStatusEnvio("enviando");
                     setEnviando(true); // Ativa o estado de "enviando"
-                    const username = "admin";
-                    const password = "speed12345";
+                    const username = Enviroment.USERNAME;
+                    const password = Enviroment.PASSWORD;
                     const token = btoa(`${username}:${password}`);
                     const cpfSemCaracteres = removeCaracteresCPF(cpf);
                     fetch(`${Enviroment.URL_BASE}/api/cadastro`, {

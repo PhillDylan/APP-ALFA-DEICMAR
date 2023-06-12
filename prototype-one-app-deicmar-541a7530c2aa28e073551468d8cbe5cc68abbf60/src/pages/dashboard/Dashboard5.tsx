@@ -207,8 +207,8 @@ export const Dashboard5 = () => {
                     disabled={statusEnvio === "enviando"}
                     onClick={async () => {
                       setStatusEnvio("enviando");
-                      const username = "admin";
-                      const password = "speed12345";
+                      const username = Enviroment.USERNAME;
+                      const password = Enviroment.PASSWORD;
                       const token = btoa(`${username}:${password}`);
                       const gate = Cookies.get(COOKIE_KEY__GATE);
                       fetch(`${Enviroment.URL_BASE}/numeroplaca`, {

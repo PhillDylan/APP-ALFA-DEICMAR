@@ -23,6 +23,14 @@ export const Enviroment = {
   * Dias para ficar de expiração dos cookies
   */ 
  DIAS_EXPIRACAO: 1,
+/**
+ * username para a autorizaçao do fetch
+ */
+ USERNAME: "admin",
+ /**
+  * password para a autorizaçao do fetch
+  */
+ PASSWORD: "speed12345",
  
     
 }
