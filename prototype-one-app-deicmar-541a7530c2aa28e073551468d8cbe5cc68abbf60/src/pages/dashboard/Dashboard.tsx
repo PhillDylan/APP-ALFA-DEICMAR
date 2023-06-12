@@ -22,7 +22,7 @@ import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
 import { NewPost } from "../../shared/components";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -31,6 +31,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Enviroment } from "../../shared/environment";
 import debounce from "lodash.debounce"; // Importe o debounce do pacote lodash.debounce
+import { RootState } from "./store";
 
 
 
@@ -66,6 +67,7 @@ export const Dashboard = () => {
   const [severity, setSeverity] = useState<AlertColor | undefined>(undefined);
   const [erroEnvio, setErroEnvio] = useState<string | undefined>();
   const [mensagemEnvio, setMensagemEnvio] = useState("");
+  const [mensagemCPF, setMensagemCPF] = useState("");
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
   const [cpf, setCpf] = useState("");
@@ -81,6 +83,9 @@ export const Dashboard = () => {
   const [upImage, setResultImage] = useState<
     { url: string; width: number; height: number } | undefined
   >();
+  const dadosFetch = useSelector((state: RootState) => state.dadosFetch);
+  const numero = 1;
+
   const dispatch = useDispatch();
 
   const handleFetchResult = (sucesso: boolean, mensagem: string) => {
@@ -94,6 +99,14 @@ export const Dashboard = () => {
   const [enviando, setEnviando] = useState(false); // Nova variável de estado
 
   const [touchCount, setTouchCount] = useState(0);
+
+  useEffect(() => {
+    // Verificar se dadosFetch é null ou undefined
+    if (!dadosFetch) {
+      navigate("/agendamento2", { replace: true });
+      return;
+    }
+  }, [dadosFetch]);
 
   useEffect(() => {
     const handleTouchMove = () => {
@@ -194,7 +207,6 @@ export const Dashboard = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
       })
       .catch((error) => {
         console.error(error);
@@ -312,8 +324,22 @@ export const Dashboard = () => {
     }
 
     setCpf(formattedCPF);
-    setStatusEnvio("certo");
+      // Verificar se o CPF digitado é igual ao CPF do agendamento
+      const cpfAgendamento = dadosFetch?.data[numero].data.driver.cpf.replace(/[.-]/g, '');
+
+      if (ValidadorCPF(inputCPF) && cpfAgendamento === inputCPF) {
+        setStatusEnvio("certo");
+        setMensagemCPF("CPF válido");
+      } else {
+        setStatusEnvio("errado");
+        setMensagemCPF("CPF digitado não confere com o do agendamento");
+      }
+      
   };
+
+  // Lógica para definir a mensagem de erro
+const helperTextCPF = !ValidadorCPF(cpf) ? "Digite um CPF válido" : mensagemCPF;
+
 
   return (
     <>
@@ -437,13 +463,7 @@ export const Dashboard = () => {
                   value={cpf}
                   onChange={handleCPFChange}
                   inputProps={{ maxLength: 14, style: { textAlign: "center" } }}
-                  helperText={
-                    !ValidadorCPF(cpf) ? (
-                      <Typography>"Digite um CPF válido"</Typography>
-                    ) : (
-                      <Typography>"Digite o CPF"</Typography>
-                    )
-                  }
+                  helperText={mensagemCPF? <Typography>{mensagemCPF}</Typography>: <Typography>"Digite o CPF"</Typography>}
                 />
               </Grid>
               <Grid item>
@@ -492,7 +512,8 @@ export const Dashboard = () => {
               statusEnvio === "enviando" ||
               open === true ||
               temErro ||
-              !imagemBase64
+              !imagemBase64 ||
+              mensagemCPF === "CPF digitado não confere com o do agendamento"
             }
             onClick={async () => {
               if (

@@ -106,7 +106,7 @@ export const Dashboard2 = () => {
     };
     getImage();
   }, [imagemSelecionada]);
-
+  
   const handleImagemSelecionada = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -118,44 +118,23 @@ export const Dashboard2 = () => {
         useWebWorker: true,
       };
       try {
-        const img = new Image();
-        img.src = URL.createObjectURL(imagem);
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          const context = canvas.getContext("2d");
-          const targetWidth = 1600;
-          const targetHeight = 800;
-          canvas.width = targetWidth;
-          canvas.height = targetHeight;
-          context?.drawImage(img, 0, 0, targetWidth, targetHeight);
-
-          if (canvas.toBlob) {
-            canvas.toBlob(async (blob) => {
-              if (blob) {
-                const file = new File([blob], imagem.name, {
-                  type: imagem.type,
-                  lastModified: imagem.lastModified,
-                });
-                const compressedImage = await compressImage(file, options);
-                const compressedDataUrl = URL.createObjectURL(compressedImage);
-                const reader = new FileReader();
-                reader.onload = () => {
-                  const base64String = reader.result as string;
-                  setImagemSelecionada(base64String);
-                  setImagemSelecionadaBase64(
-                    base64String.substring(base64String.lastIndexOf(",") + 1)
-                  );
-                };
-                reader.readAsDataURL(compressedImage);
-              }
-            });
-          }
+        const compressedImage = await compressImage(imagem, options);
+        const compressedDataUrl = URL.createObjectURL(compressedImage);
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64String = reader.result as string;
+          setImagemSelecionada(base64String);
+          setImagemSelecionadaBase64(
+            base64String.substring(base64String.lastIndexOf(",") + 1)
+          );
         };
+        reader.readAsDataURL(compressedImage);
       } catch (error) {
         console.log(error);
       }
     }
   };
+  
 
   const adicionarItem = () => {
     // Restante do código...

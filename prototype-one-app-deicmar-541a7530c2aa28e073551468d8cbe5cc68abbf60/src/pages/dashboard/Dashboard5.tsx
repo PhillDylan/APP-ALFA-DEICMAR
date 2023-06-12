@@ -211,7 +211,6 @@ export const Dashboard5 = () => {
                       const password = "speed12345";
                       const token = btoa(`${username}:${password}`);
                       const gate = Cookies.get(COOKIE_KEY__GATE);
-                      console.log('entrou')
                       fetch(`${Enviroment.URL_BASE}/numeroplaca`, {
                         method: "POST",
                         headers: { Authorization: "Basic " + token },
@@ -219,8 +218,6 @@ export const Dashboard5 = () => {
                       })
                         .then((response) => response.json())
                         .then((data) => {
-                          console.log(data);
-                          console.log(data.status);
                           if (data.status === "success") {
                             setSeverity("success");
                             setLacre("");

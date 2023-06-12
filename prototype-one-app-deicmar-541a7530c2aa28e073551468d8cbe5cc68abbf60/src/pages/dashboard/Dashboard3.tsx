@@ -139,11 +139,9 @@ export const Dashboard3 = () => {
       navigate("/agendamento2", { replace: true });
       return;
     }
-    console.log(mensagemFetch, dadosFetch?.data[numero].face ) 
   }, [listaItens, dadosFetch, navigate,mensagemFetch]);
 
   const enviarDados = () => {
-    console.log("dados", dadosFetch?.data[numero].id);
     setStatusEnvio("enviando");
     // Restante do código do envio dos dados
     // ...
@@ -225,7 +223,6 @@ export const Dashboard3 = () => {
 
     fetch(`${Enviroment.URL_BASE}/cadastrolacre`, options)
       .then((response) => {
-        console.log(response);
         if (response.ok) {
           return response.json();
         } else {
@@ -250,7 +247,6 @@ export const Dashboard3 = () => {
           handleFetchResult(false, data.agendamento.message);
         }
         setAlertMessage(data.agendamento.message);
-        console.log(data);
       })
       .catch((error) => {
         setStatusEnvio("erro");

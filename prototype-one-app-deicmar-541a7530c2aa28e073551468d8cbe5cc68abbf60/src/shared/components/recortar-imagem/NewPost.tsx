@@ -131,7 +131,7 @@ export const NewPost = ({
       if (!friends.face) {
         setShowMessage(true);
       }
-    }, 10000);
+    }, 15000);
 
     return () => clearTimeout(timer);
   }, [friends.face]);
