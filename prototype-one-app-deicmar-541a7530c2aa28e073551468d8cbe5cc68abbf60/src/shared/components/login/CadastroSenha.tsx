@@ -19,7 +19,6 @@ interface ICadastroSenhaProps {
 
 export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => {
   const { login } = useAuthContext();
-
   const [isLoading, setIsLoading] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [password, setPassword] = useState('');
@@ -35,7 +34,7 @@ export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => {
   };
 
   const handleNavegar = () => {
-    window.location.href = '/direct';
+    window.location.href = '/#/direct';
   };
 
   const encrypt = (data: string): string => {

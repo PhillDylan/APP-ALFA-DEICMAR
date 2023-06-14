@@ -33,6 +33,7 @@ import Stack from "@mui/material/Stack";
 import debounce from "lodash.debounce"; // Importe o debounce do pacote lodash.debounce
 
 
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -71,7 +72,10 @@ export const Dashboard2 = () => {
   const listaItens = useSelector((state: RootState) => state.listaItens); // Obter o estado da lista de itens do Redux
   const imageRef = useRef<HTMLImageElement>(null);
   const dispatch = useDispatch();
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [isBase64Processing, setIsBase64Processing] = useState(false);
+  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
+  
   const [touchCount, setTouchCount] = useState(0);
 
   useEffect(() => {
@@ -113,6 +117,8 @@ export const Dashboard2 = () => {
     if (event.target.files && event.target.files.length > 0) {
       const imagem = event.target.files[0];
       setImagemSelecionada(URL.createObjectURL(imagem));
+      setIsBase64Processing(true);
+      setIsSaveButtonDisabled(true);
       const options = {
         maxSizeMB: 0.3,
         useWebWorker: true,
@@ -123,29 +129,43 @@ export const Dashboard2 = () => {
         const reader = new FileReader();
         reader.onload = () => {
           const base64String = reader.result as string;
-          setImagemSelecionada(base64String);
           setImagemSelecionadaBase64(
             base64String.substring(base64String.lastIndexOf(",") + 1)
           );
+          console.log(base64String);
+          setIsBase64Processing(false);
+          setIsSaveButtonDisabled(false);
         };
         reader.readAsDataURL(compressedImage);
       } catch (error) {
         console.log(error);
+        setIsBase64Processing(false);
+        setIsSaveButtonDisabled(false);
       }
     }
   };
   
+  
 
-  const adicionarItem = () => {
-    // Restante do código...
-    const novoItem = { lacre, imagem: imagemSelecionadaBase64 };
-    dispatch({ type: "SET_LISTA_ITENS", payload: [...listaItens, novoItem] }); // Atualizar o estado do Redux com o novo item
-    // Resetar o lacre e a imagem selecionada
+  const limparCampos = () => {
     setLacre("");
     setImagemSelecionada(undefined);
     setImagemSelecionadaBase64(undefined);
     setImage(undefined);
   };
+
+  const adicionarItem = async () => {
+    setIsLoading(true);
+  
+    const novoItem = { lacre: lacre, imagem: imagemSelecionadaBase64 };
+    await dispatch({ type: "SET_LISTA_ITENS", payload: [...listaItens, novoItem] }); // Aguardar a atualização do estado do Redux com o novo item
+  
+    setIsLoading(false);
+  
+    // Resetar o lacre e a imagem selecionada
+    limparCampos();
+  };
+  
 
   const removerItem = (index: number) => {
     const novoItem = [...listaItens];
@@ -160,6 +180,7 @@ export const Dashboard2 = () => {
 
   const theme = useTheme();
 
+  
   return (
     <>
       <LayoutBaseDePagina titulo="Cadastro Lacre" barraDeFerramentas={<></>}>
@@ -218,17 +239,16 @@ export const Dashboard2 = () => {
                       },
                     }}
                   />
-                <LoadingButton
-                  loading={false}
-                  loadingPosition="start"
-                  startIcon={<SaveIcon />}
-                  variant="contained"
-                  onClick={adicionarItem}
-                  disabled={!lacre || !imagemSelecionada} // Desabilitar o botão quando não houver valor no lacre ou imagem selecionada
-                >
-                  SALVAR
-                </LoadingButton>
-
+                    <LoadingButton
+                      loading={isBase64Processing}
+                      loadingPosition="start"
+                      startIcon={<SaveIcon />}
+                      variant="contained"
+                      onClick={adicionarItem}
+                      disabled={isSaveButtonDisabled || isBase64Processing}
+                    >
+                      {isBase64Processing ? 'Salvando...' : 'SALVAR'}
+                    </LoadingButton>
                 <List
                   sx={{
                     width: "100%",

@@ -18,7 +18,7 @@ export const Enviroment = {
  /**
   * Url base de consultado dos dados dessa aplicação
   */
- URL_BASE:'https://navagio.deicmar.corp:1890/',
+ URL_BASE:'http://192.168.13.224:1880',
  /**
   * Dias para ficar de expiração dos cookies
   */ 
@@ -26,11 +26,10 @@ export const Enviroment = {
 /**
  * username para a autorizaçao do fetch
  */
- USERNAME: "user",
+ USERNAME: "admin",
  /**
   * password para a autorizaçao do fetch
   */
- PASSWORD: "ipmsspeed",
- 
-    
+ PASSWORD: "speed12345",
+
 }

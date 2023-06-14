@@ -147,7 +147,7 @@ export const Dashboard3 = () => {
     // ...
 
     // Restante do código do envio dos dados
-    const base64ToBlob: any = (base64String: any, mimeType: any) => {
+    const base64ToBlob: any = async (base64String: any, mimeType: any) => {
       const byteCharacters: any = atob(base64String);
       const byteArrays: any = [];
       for (let offset: any = 0; offset < byteCharacters.length; offset += 512) {
@@ -159,6 +159,7 @@ export const Dashboard3 = () => {
         const byteArray: any = new Uint8Array(byteNumbers);
         byteArrays.push(byteArray);
       }
+
       return new Blob(byteArrays, { type: mimeType });
     };
 
@@ -167,96 +168,110 @@ export const Dashboard3 = () => {
     var hora: any = new Date().toISOString();
     // Criar um objeto vazio para enviar como null
 
-    var formData = new FormData();
-    listaItens.forEach((item: { lacre: string; imagem: Buffer }) => {
-      const buffer = item.imagem;
-      const blobImage = base64ToBlob(buffer, "image/jpeg");
-      const file = new File([blobImage], "imagem.jpg", { type: "image/jpeg" });
-      var guide: any = sendNullValues ? "null" : "item.guide";
-      var tipolacre: any = sendNullValues ? "null" : "NORMAL";
-      var agendamento: any = sendNullValues
-        ? "null"
-        : dadosFetch?.data[numero].id;
-      var numerolacre: any = sendNullValues ? "null" : item.lacre;
-      var nomeoperador: any = sendNullValues
-        ? "null"
-        : Cookies.get(COOKIE_KEY__NOME_OPERADOR);
-      var idoperador: any = sendNullValues
-        ? "null"
-        : Cookies.get(COOKIE_KEY__ID_OPERADOR);
-      formData.append("file", file);
-      formData.append("string", hora);
-      formData.append("string", guide);
-      formData.append("string", tipolacre);
-      formData.append("string", agendamento);
-      formData.append("string", numerolacre);
-      formData.append("string", nomeoperador);
-      formData.append("string", idoperador);
-    });
-    const nullObject = [
-      hora,
-      "item.guide",
-      "NORMAL",
-      dadosFetch?.data[numero].id,
-      "null",
-      Cookies.get(COOKIE_KEY__NOME_OPERADOR),
-      Cookies.get(COOKIE_KEY__ID_OPERADOR),
-    ];
+// Certifique-se de que essa função esteja marcada como assíncrona.
 
-    // Se dadosFetch.data.obj.container for falso, enviar o objeto nullObject
-    if (sendNullValues) {
-      for (let i = 0; i < nullObject.length; i++) {
-        formData.append("string", String(nullObject[i]));
-      }
-    }
+async function processItems(listaItens: any[]) {
+  console.log({listaItens});
+  var formData = new FormData();
+  await Promise.all(listaItens.map(async (item: { lacre: string; imagem: Buffer }) => {
+    const buffer = item.imagem;
+    const blobImage = await base64ToBlob(buffer, "image/jpeg");
+    const file = new File([blobImage], "imagem.jpg", { type: "image/jpeg" });
+    var numerolacre: any = sendNullValues ? "null" : item.lacre;
+    formData.append(numerolacre, file);
+  }));
+  var guide: any = sendNullValues ? "null" : "item.guide";
+  var tipolacre: any = sendNullValues ? "null" : "NORMAL";
+  var agendamento: any = sendNullValues ? "null" : dadosFetch?.data[numero].id;
+  var nomeoperador: any = sendNullValues ? "null"  : Cookies.get(COOKIE_KEY__NOME_OPERADOR);
+  var idoperador: any = sendNullValues ? "null" : Cookies.get(COOKIE_KEY__ID_OPERADOR);
 
-    const username = Enviroment.USERNAME;
-    const password = Enviroment.PASSWORD; // substitua isso pela senha descriptografada
-    const token: any = btoa(`${username}:${password}`);
-    var options: any = {
-      method: "POST",
-      headers: {
-        Authorization: "Basic " + token,
-      },
-      body: formData,
+   formData.append("hora", hora);
+   formData.append("guide", guide);
+   formData.append("tipolacre", tipolacre);
+   formData.append("agendamento", agendamento);
+   formData.append("nomeoperador", nomeoperador);
+   formData.append("idoperador", idoperador); 
+
+
+  return formData
+}
+
+// Chame a função processItems e envolva-a em uma função assíncrona.
+async function exampleFunction() {
+  let formData: any = await processItems(listaItens);
+
+  return formData;
+}
+
+    exampleFunction().then((formData) => {
+          // Verificar se dadosFetch.data.obj.container é falso
+    const sendNullValues = !dadosFetch?.data[numero].container;
+      const nullObject = {
+        hora: hora,
+        guide: "item.guide",
+        tipo_Lacre: "NORMAL",
+        Agendamento: dadosFetch?.data[numero].id,
+        Lacres:"null",
+        Operador: Cookies.get(COOKIE_KEY__NOME_OPERADOR),
+        ID_Operador: Cookies.get(COOKIE_KEY__ID_OPERADOR),
     };
+  
+      // Se dadosFetch.data.obj.container for falso, enviar o objeto nullObject
+      if (sendNullValues) {
+        formData.append("Dados", JSON.stringify(nullObject));
+      }
+      console.log(formData.getAll("string"));
+      const username = Enviroment.USERNAME;
+      const password = Enviroment.PASSWORD; // substitua isso pela senha descriptografada
+      const token: any = btoa(`${username}:${password}`);
+      var options: any = {
+        method: "POST",
+        headers: {
+          Authorization: "Basic " + token,
 
-    fetch(`${Enviroment.URL_BASE}/cadastrolacre`, options)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Erro ao enviar");
-        }
-      })
-      .then((data) => {
-        setStatusEnvio("pronto");
-        if (
-          data.agendamento &&
-          data.agendamento.message === "Agendamento cadastrado"
-        ) {
-          toast.success(data.agendamento.message, { style: alertStyle });
-          navigate("/agendamento2");
-        } else {
+        },
+        body: formData,
+      };
+  
+      fetch(`${Enviroment.URL_BASE}/cadastrolacre`, options)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Erro ao enviar");
+          }
+        })
+        .then((data) => {
+          setStatusEnvio("pronto");
+          if (
+            data.agendamento &&
+            data.agendamento.message === "Agendamento cadastrado"
+          ) {
+            toast.success(data.agendamento.message, { style: alertStyle });
+            navigate("/agendamento2");
+          } else {
+            setStatusEnvio("erro");
+            setAlertSeverity("error");
+            setSeverity("error");
+            setOpen(true);
+            setMensagemEnvio(data.message);
+            setErroEnvio(undefined);
+            handleFetchResult(false, data.agendamento.message);
+          }
+          setAlertMessage(data.agendamento.message);
+        })
+        .catch((error) => {
           setStatusEnvio("erro");
           setAlertSeverity("error");
+          setAlertMessage(error.message);
+          console.error(error);
           setSeverity("error");
           setOpen(true);
-          setMensagemEnvio(data.message);
-          setErroEnvio(undefined);
-          handleFetchResult(false, data.agendamento.message);
-        }
-        setAlertMessage(data.agendamento.message);
-      })
-      .catch((error) => {
-        setStatusEnvio("erro");
-        setAlertSeverity("error");
-        setAlertMessage(error.message);
-        console.error(error);
-        setSeverity("error");
-        setOpen(true);
-        setErroEnvio(error.message);
-      });
+          setErroEnvio(error.message);
+        });
+    });
+  
   };
 
   const handleFetchResult = (sucesso: boolean, mensagem: string) => {

@@ -89,6 +89,9 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
   }, []);
 
   const isAuthenticated = useMemo(() => !!accessToken, [accessToken]);
+  if (isAuthenticated === false) {
+    Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
+  }
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login: handleLogin, logout: handleLogout }}>
