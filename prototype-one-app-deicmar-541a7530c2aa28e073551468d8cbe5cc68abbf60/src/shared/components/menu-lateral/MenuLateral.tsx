@@ -20,6 +20,8 @@ import { useAppDrawerContext, useAppThemeContext, useAuthContext } from "../../c
 import { useMatch, useNavigate, useResolvedPath } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { styled } from '@mui/system';
+import ipms from "../../../shared/assets/img/ipms.png"
+import ipms2 from "../../../shared/assets/img/ipms2.png"
 
 
 const DrawerWithGradient = styled(Drawer)(({ theme }) => ({
@@ -117,15 +119,11 @@ export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
             alignItems="center"
             justifyContent="center"
           >
-            <Avatar
-              sx={{
-                bgcolor: green[500],
-                height: theme.spacing(12),
-                width: theme.spacing(12),
-              }}
-            >
-              <AssignmentIcon />
-            </Avatar>
+            {theme.palette.mode === 'dark' ? (
+              <img src={ipms2} style={{ width: theme.spacing(18), height: theme.spacing(18) }} alt="" />
+            ) : (
+              <img src={ipms} style={{ width: theme.spacing(18), height: theme.spacing(18) }} alt="" />
+            )}
           </Box>
 
           <Divider />

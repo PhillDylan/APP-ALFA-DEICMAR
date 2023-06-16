@@ -34,7 +34,7 @@ export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => {
   };
 
   const handleNavegar = () => {
-    window.location.href = '/#/direct';
+    window.location.href = '/direct';
   };
 
   const encrypt = (data: string): string => {

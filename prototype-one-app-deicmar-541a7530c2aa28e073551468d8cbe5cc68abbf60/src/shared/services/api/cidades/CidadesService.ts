@@ -54,7 +54,6 @@ const getAll = async (page = 1, filter = '', id = ''): Promise<TCidadesComTotalC
 const getById = async (id: number): Promise<IDetalheCidade | Error> => {
   try {
     const { data } = await Api.get(`/ultimosagendamentos`);
-    console.log('data',data);
     if (data) {
       return data;
     }

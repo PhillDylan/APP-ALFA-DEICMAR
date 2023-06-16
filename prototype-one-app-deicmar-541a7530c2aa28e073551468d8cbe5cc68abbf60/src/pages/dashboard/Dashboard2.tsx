@@ -132,13 +132,11 @@ export const Dashboard2 = () => {
           setImagemSelecionadaBase64(
             base64String.substring(base64String.lastIndexOf(",") + 1)
           );
-          console.log(base64String);
           setIsBase64Processing(false);
           setIsSaveButtonDisabled(false);
         };
         reader.readAsDataURL(compressedImage);
       } catch (error) {
-        console.log(error);
         setIsBase64Processing(false);
         setIsSaveButtonDisabled(false);
       }
@@ -246,9 +244,11 @@ export const Dashboard2 = () => {
                       variant="contained"
                       onClick={adicionarItem}
                       disabled={isSaveButtonDisabled || isBase64Processing}
+                      sx={{ marginBottom: theme.spacing(2) }} // Adicionando uma margem inferior de 2 espaços
                     >
                       {isBase64Processing ? 'Salvando...' : 'SALVAR'}
                     </LoadingButton>
+
                 <List
                   sx={{
                     width: "100%",
@@ -303,7 +303,7 @@ export const Dashboard2 = () => {
                   ))}
                 </List>
 
-                <Link to="/checklist">
+                <Link to="/checklist" style={{ textDecoration: "none" }}>
                   <Button size="large" variant="contained">
                     VOLTAR
                   </Button>

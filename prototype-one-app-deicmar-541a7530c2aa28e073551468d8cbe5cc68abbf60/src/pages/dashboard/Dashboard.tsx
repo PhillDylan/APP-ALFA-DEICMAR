@@ -387,6 +387,7 @@ const helperTextCPF = !ValidadorCPF(cpf) ? "Digite um CPF válido" : mensagemCPF
                         variant="outlined"
                         aria-label="upload picture"
                         component="span"
+                        sx={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(1) }} // Adicionando uma margem inferior de 2 espaços
                       >
                         TROCAR IMAGEM
                       </LoadingButton>
@@ -494,7 +495,7 @@ const helperTextCPF = !ValidadorCPF(cpf) ? "Digite um CPF válido" : mensagemCPF
               <Grid item>
 
             {statusEnvio !== 'enviando' && (
-              <Link to="/checklist">
+              <Link to="/checklist" style={{ textDecoration: "none" }}>
                 <Button size="large" variant="contained">
                   VOLTAR
                 </Button>
@@ -504,6 +505,7 @@ const helperTextCPF = !ValidadorCPF(cpf) ? "Digite um CPF válido" : mensagemCPF
           <Button
             size="large"
             variant="contained"
+            sx={{ marginLeft: theme.spacing(2) }} // Adicionando uma margem inferior de 2 espaços
             endIcon={<SendIcon />}
             disabled={
               !nome ||

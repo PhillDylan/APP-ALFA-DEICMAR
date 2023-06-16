@@ -37,7 +37,6 @@ const auth = async (
     const { data } = await Api.postForm("/auth", { data: { encryptedData } });
 
     if (data) {
-      console.log(data)
       return data;
     }
 

@@ -12,7 +12,8 @@ import {
 import { Box } from "@mui/system";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useAppDrawerContext } from "../contexts";
-import Speed from "../../shared/assets/img/Speed.png";
+import ipms from "../../shared/assets/img/ipms.png"
+import ipms2 from "../../shared/assets/img/ipms2.png"
 import bandeirantesDeicmar from "../../shared/assets/img/bandeirantesDeicmar.png"
 
 
@@ -86,11 +87,11 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
     </Typography>
   </div>
   <Grid container alignItems="center" justifyContent="flex-end">
-    <img
-      src={Speed}
-      style={{ width: smDown ? '50px' : '100px', height: 'auto' }}
-      alt=""
-    />
+    {theme.palette.mode === 'dark' ? (
+      <img src={ipms2} style={{ width: smDown ? '40px' : '80px', height: 'auto' }} alt="" />
+      ) : (
+      <img src={ipms} style={{ width: smDown ? '40px' : '80px', height: 'auto' }} alt="" />
+    )}
   </Grid>
 </Box>
 

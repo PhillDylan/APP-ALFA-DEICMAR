@@ -171,7 +171,6 @@ export const Dashboard3 = () => {
 // Certifique-se de que essa função esteja marcada como assíncrona.
 
 async function processItems(listaItens: any[]) {
-  console.log({listaItens});
   var formData = new FormData();
   await Promise.all(listaItens.map(async (item: { lacre: string; imagem: Buffer }) => {
     const buffer = item.imagem;
@@ -221,7 +220,6 @@ async function exampleFunction() {
       if (sendNullValues) {
         formData.append("Dados", JSON.stringify(nullObject));
       }
-      console.log(formData.getAll("string"));
       const username = Enviroment.USERNAME;
       const password = Enviroment.PASSWORD; // substitua isso pela senha descriptografada
       const token: any = btoa(`${username}:${password}`);
@@ -363,7 +361,7 @@ async function exampleFunction() {
                           <TableCell>LACRE</TableCell>
                           <TableCell>
                             <Box marginLeft="auto">
-                              <Link to="/cadastro-lacre">
+                              <Link to="/cadastro-lacre" style={{ textDecoration: "none" }}>
                                 <Button variant="contained">CRIAR</Button>
                               </Link>
                             </Box>
@@ -402,7 +400,7 @@ async function exampleFunction() {
                         <TableCell>
                           <Box marginLeft="auto">
                           {mensagemFetch === false && dadosFetch?.data[numero].face === false  && (
-                            <Link to="/cadastro-facial">
+                            <Link to="/cadastro-facial" style={{ textDecoration: "none" }}>
                               <Button
                                 variant="contained"
                               >
@@ -439,32 +437,36 @@ async function exampleFunction() {
                   </Alert>
                 </Collapse>
 
-                {statusEnvio !== 'enviando' && statusEnvio !== 'erro'  && (
-                  <Link to="/agendamento2">
-                    <Button size="large" variant="contained">
-                      VOLTAR
-                    </Button>
-                  </Link>
-                  )}
+                <Box display="flex" justifyContent="center" marginTop={2}>
+    {statusEnvio !== "enviando" && statusEnvio !== "erro" && (
+      <Link to="/agendamento2" style={{textDecorationLine:"none"}}>
+        <Button size="large" variant="contained">
+          VOLTAR
+        </Button>
+      </Link>
+    )}
 
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={enviarDados}
-                  disabled={
-                    !greenChecked ||
-                    (!mensagemFetch && dadosFetch?.data[numero].face === false) ||
-                    statusEnvio === 'enviando'
-                  }
-                >
-                  {statusEnvio === "enviando"
-                    ? "ENVIANDO..."
-                    : statusEnvio === "pronto"
-                    ? "ENVIADO"
-                    : statusEnvio === "erro"
-                    ? "REENVIAR"
-                    : "ENVIAR"}
-                </Button>
+    <Box marginLeft={4}>
+      <Button
+        variant="contained"
+        size="large"
+        onClick={enviarDados}
+        disabled={
+          !greenChecked ||
+          (!mensagemFetch && dadosFetch?.data[numero].face === false) ||
+          statusEnvio === "enviando"
+        }
+      >
+        {statusEnvio === "enviando"
+          ? "ENVIANDO..."
+          : statusEnvio === "pronto"
+          ? "ENVIADO"
+          : statusEnvio === "erro"
+          ? "REENVIAR"
+          : "ENVIAR"}
+      </Button>
+    </Box>
+  </Box>
               </CardContent>
             </Stack>
           </CardWithGradient>

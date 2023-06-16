@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import faceNotDetected from "../../assets/img/face_not_detected.jpg";
 import ReactLoading from "react-loading";
-import { Typography } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
 
 interface ImageProps {
   url: string; // URL of the image
@@ -38,7 +38,7 @@ export const NewPost = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const croppedCanvasRef = useRef<HTMLCanvasElement>(null);
   const [showMessage, setShowMessage] = useState(false);
-
+  const theme = useTheme();
   const handleImage = async () => {
     if (imgRef.current) {
       const detections = await faceapi.detectAllFaces(
@@ -170,6 +170,7 @@ export const NewPost = ({
       ) : (
         <div
           style={{
+            marginTop: theme.spacing(2),
             display: showMessage ? "none" : "flex",
             flexDirection: "column",
             alignItems: "center",
