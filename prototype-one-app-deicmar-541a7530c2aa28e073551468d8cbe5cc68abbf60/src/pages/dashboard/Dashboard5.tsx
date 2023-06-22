@@ -34,6 +34,12 @@ import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
 
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
@@ -90,11 +96,15 @@ export const Dashboard5 = () => {
 
   const dispatch = useDispatch();
   const location = useLocation();
+  const [openDialog, setOpenDialog] = React.useState(false);
 
   
   const COOKIE_KEY__GATE = 'APP_GATE';
-  
+  const COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
+  const COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
 
+  const idOperador = Cookies.get(COOKIE_KEY__ID_OPERADOR);
+  const nomeOperador = Cookies.get(COOKIE_KEY__NOME_OPERADOR);
 
   // Estilos personalizados para o alerta
   const alertStyle = {
@@ -113,6 +123,66 @@ export const Dashboard5 = () => {
 
   const handleFetchResult = (mensagem: any) => {
     dispatch({ type: "SET_DADOS_FETCH", payload: mensagem });
+  };
+
+  const handleFetchResultUpdate = (mensagem: any) => {
+     let mensagemComOperador = {
+      idOperador: idOperador,
+      nomeOperador: nomeOperador
+    }
+    handleClickOpen();
+    dispatch({ type: "SET_DADOS_FETCH_UPDATE", payload: (mensagem + mensagemComOperador)});
+  };
+
+  const handleClickOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleNextcheck = () => {
+    navigate("/checklist");
+  };
+
+  const handleUpdateCheck = () => {
+    navigate("/Update");
+  };
+
+
+  const handleFetchDialog = (mensagem: any) => {
+    console.log('token');
+    const dados: any =  mensagem
+    setStatusEnvio("enviando");
+    const username = Enviroment.USERNAME;
+    const password = Enviroment.PASSWORD;
+    const token = btoa(`${username}:${password}`);
+    console.log('token2');
+    fetch(`${Enviroment.URL_BASE}/checklist`, {
+      method: "POST",
+      headers: { Authorization: "Basic " + token },
+      body: dados.data[1].id,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (data.status === "success") {
+          handleFetchResultUpdate(data);
+          //navigate("/checklist");
+        } else {
+
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    // if (false){
+
+    // }else{
+    //   navigate("/checklist");
+    // }
+
   };
 
   const handlePlacaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,6 +210,7 @@ export const Dashboard5 = () => {
       dispatch({ type: "SET_LISTA_ITENS", payload: [] });
       dispatch({ type: "SET_MENSAGEM_FETCH", payload: false });
       dispatch({ type: "SET_DADOS_FETCH", payload: null });
+      dispatch({ type: "SET_DADOS_FETCH_UPDATE", payload: null });
     };
 
     if (location.pathname === "/agendamento2") {
@@ -158,6 +229,28 @@ export const Dashboard5 = () => {
         <Box height="100vh" display="flex" flexDirection="column">
           <CardWithGradient sx={{ flex: 1, overflow: "auto" }}>
             <Stack spacing={5}>
+            <Dialog
+        open={openDialog}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Observações"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Já consta no sistema um checklist para o agendamento atual deseja fazer um novo checklist para o agendameto ou atualizar o agendamento atual ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Voltar</Button>
+          <Button onClick={handleUpdateCheck}>Atualizar checklist</Button>
+          <Button onClick={handleNextcheck} autoFocus>
+            Novo checklist
+          </Button>
+        </DialogActions>
+      </Dialog>
               <CardContent>
                 <Item>
                 <TextField
@@ -227,8 +320,11 @@ export const Dashboard5 = () => {
                             setMensagemEnvio(data.message);
                             setErroEnvio(undefined);
                             handleFetchResult(data);
+                            handleFetchDialog(data);
                             toast.success(data.message, { style: alertStyle });
-                            navigate("/checklist");
+                            console.log(data)
+                            setStatusEnvio("pronto");
+                            //navigate("/checklist");
                           } else {
                             setSeverity("error");
                             setOpen(true);

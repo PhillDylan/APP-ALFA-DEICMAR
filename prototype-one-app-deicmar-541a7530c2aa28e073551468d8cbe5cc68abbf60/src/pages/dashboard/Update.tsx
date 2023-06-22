@@ -58,7 +58,7 @@ const CardWithGradient = styled(Card)(({ theme }) => ({
 }));
 
 
-export const Dashboard2 = () => {
+export const Update = () => {
   const [lacre, setLacre] = useState("");
   const [image, setImage] = useState<
     { url: string; width: number; height: number } | undefined
@@ -76,6 +76,7 @@ export const Dashboard2 = () => {
   const [isBase64Processing, setIsBase64Processing] = useState(false);
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
   const dadosFetch = useSelector((state: RootState) => state.dadosFetch);
+  const dadosFetchUpdate = useSelector((state: RootState) => state.dadosFetchUpdate);
   const [touchCount, setTouchCount] = useState(0);
   const navigate = useNavigate();
   useEffect(() => {
@@ -100,11 +101,11 @@ export const Dashboard2 = () => {
 
   useEffect(() => {
     // Verificar se dadosFetch é null ou undefined
-    if (!dadosFetch) {
+    if (!dadosFetch || !dadosFetchUpdate) {
       navigate("/agendamento2", { replace: true });
       return;
     }
-  }, [dadosFetch]);
+  }, [dadosFetch, dadosFetchUpdate]);
 
   useEffect(() => {
     const getImage = () => {
@@ -161,22 +162,13 @@ export const Dashboard2 = () => {
   };
 
   const adicionarItem = async () => {
-    setIsLoading(true);
-  
-    const novoItem = { lacre: lacre, imagem: imagemSelecionadaBase64 };
-    await dispatch({ type: "SET_LISTA_ITENS", payload: [...listaItens, novoItem] }); // Aguardar a atualização do estado do Redux com o novo item
-  
-    setIsLoading(false);
-  
-    // Resetar o lacre e a imagem selecionada
+
     limparCampos();
   };
   
 
   const removerItem = (index: number) => {
-    const novoItem = [...listaItens];
-    novoItem.splice(index, 1);
-    dispatch({ type: "SET_LISTA_ITENS", payload: novoItem }); // Atualizar o estado do Redux removendo o item
+
   };
 
 
@@ -189,7 +181,7 @@ export const Dashboard2 = () => {
   
   return (
     <>
-      <LayoutBaseDePagina titulo="Cadastro Lacre" barraDeFerramentas={<></>}>
+      <LayoutBaseDePagina titulo="atualização de Checklist" barraDeFerramentas={<></>}>
         <Divider />
         <Box height="100vh" display="flex" flexDirection="column">
           <CardWithGradient sx={{ flex: 1, overflow: "auto" }}>
@@ -246,15 +238,13 @@ export const Dashboard2 = () => {
                     }}
                   />
                     <LoadingButton
-                      loading={isBase64Processing}
                       loadingPosition="start"
                       startIcon={<SaveIcon />}
                       variant="contained"
                       onClick={adicionarItem}
-                      disabled={isSaveButtonDisabled || isBase64Processing}
                       sx={{ marginBottom: theme.spacing(2) }} // Adicionando uma margem inferior de 2 espaços
                     >
-                      {isBase64Processing ? 'Salvando...' : 'SALVAR'}
+                      {'SALVAR'}
                     </LoadingButton>
 
                 <List
@@ -294,24 +284,10 @@ export const Dashboard2 = () => {
                     </ListSubheader>
                   }
                 >
-                  {listaItens.map((item, index) => (
-                    <li key={`item-${index}`}>
-                      <ListItem>
-                        <ListItemText primary={item.lacre} />
-                        <IconButton
-                          color="secondary"
-                          edge="end"
-                          aria-label="delete"
-                          onClick={() => removerItem(index)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </ListItem>
-                    </li>
-                  ))}
+                  
                 </List>
 
-                <Link to="/checklist" style={{ textDecoration: "none" }}>
+                <Link to="/agendamento2" style={{ textDecoration: "none" }}>
                   <Button size="large" variant="contained">
                     VOLTAR
                   </Button>
@@ -326,4 +302,4 @@ export const Dashboard2 = () => {
   );
 };
 
-export default Dashboard2;
+export default Update;

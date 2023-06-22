@@ -84,7 +84,8 @@ export const Dashboard = () => {
     { url: string; width: number; height: number } | undefined
   >();
   const dadosFetch = useSelector((state: RootState) => state.dadosFetch);
-  const numero = 1;
+  const numero = 1;  
+
 
   const dispatch = useDispatch();
 
@@ -549,6 +550,7 @@ const helperTextCPF = !ValidadorCPF(cpf) ? "Digite um CPF válido" : mensagemCPF
                     })
                       .then((response) => response.json())
                       .then((data) => {
+                       
                         if (data.status === "Success") {
                           setStatusEnvio("pronto");
                           setEnviando(false);
@@ -570,7 +572,7 @@ const helperTextCPF = !ValidadorCPF(cpf) ? "Digite um CPF válido" : mensagemCPF
                           setErroEnvio(undefined);
                           handleFetchResult(false, data.message);
                           setEnviando(false);
-
+                          console.log(data)
                         }
                       })
                       .catch((error) => {

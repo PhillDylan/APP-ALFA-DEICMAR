@@ -5,6 +5,7 @@ interface AppState {
   listaItens: { lacre: string; imagem: Buffer }[];
   mensagemFetch: boolean | null;
   dadosFetch: any;
+  dadosFetchUpdate: any;
   idAgendamento: string | null; // Adicione essa propriedade
 }
 
@@ -13,6 +14,7 @@ const initialState: AppState = {
   listaItens: [],
   mensagemFetch: false,
   dadosFetch: null, // Adicione essa linha com um valor inicial apropriado
+  dadosFetchUpdate: null, 
   idAgendamento: null, // Adicione essa propriedade
 };
 
@@ -40,6 +42,13 @@ interface SetDadosFetchAction {
   payload: any; // Substitua "any" pelo tipo correto dos dados retornados
 }
 
+const SET_DADOS_FETCH_UPDATE = 'SET_DADOS_FETCH_UPDATE';
+
+interface SetDadosFetchUpdateAction {
+  type: typeof SET_DADOS_FETCH_UPDATE;
+  payload: any; // Substitua "any" pelo tipo correto dos dados retornados
+}
+
 const SET_ID_AGENDAMENTO = 'SET_ID_AGENDAMENTO';
 
 interface SetIdAgendamentoAction {
@@ -48,7 +57,7 @@ interface SetIdAgendamentoAction {
 }
 
 // Dentro do bloco de definição de AppActionTypes
-type AppActionTypes = SetListaItensAction | SetMensagemFetchAction | SetDadosFetchAction | SetIdAgendamentoAction;
+type AppActionTypes = SetListaItensAction | SetMensagemFetchAction | SetDadosFetchAction | SetIdAgendamentoAction | SetDadosFetchUpdateAction ;
 
 
 // Defina o reducer
@@ -63,6 +72,11 @@ const reducer = (state: AppState = initialState, action: AppActionTypes): AppSta
       return {
         ...state,
         dadosFetch: action.payload,
+      };
+      case SET_DADOS_FETCH_UPDATE:
+      return {
+        ...state,
+        dadosFetchUpdate: action.payload,
       };
     case SET_MENSAGEM_FETCH:
       return {
