@@ -79,6 +79,8 @@ export const Update = () => {
   const dadosFetchUpdate = useSelector((state: RootState) => state.dadosFetchUpdate);
   const [touchCount, setTouchCount] = useState(0);
   const navigate = useNavigate();
+
+
   useEffect(() => {
     const handleTouchMove = () => {
       setTouchCount((prevCount) => prevCount + 1);
@@ -99,13 +101,14 @@ export const Update = () => {
     };
   }, []);
 
-  useEffect(() => {
-    // Verificar se dadosFetch é null ou undefined
-    if (!dadosFetch || !dadosFetchUpdate) {
-      navigate("/agendamento2", { replace: true });
-      return;
-    }
-  }, [dadosFetch, dadosFetchUpdate]);
+  // useEffect(() => {
+  //   console.log('dadosFetch', dadosFetch , 'dadosFetchUpdate' ,dadosFetchUpdate)
+  //   // Verificar se dadosFetch é null ou undefined
+  //   if (!dadosFetch || !dadosFetchUpdate) {
+  //     navigate("/agendamento2", { replace: true });
+  //     return;
+  //   }
+  // }, [dadosFetch, dadosFetchUpdate]);
 
   useEffect(() => {
     const getImage = () => {
@@ -151,8 +154,8 @@ export const Update = () => {
       }
     }
   };
-  
-  
+
+
 
   const limparCampos = () => {
     setLacre("");

@@ -7,6 +7,7 @@ export const AppRoutes = () => {
   useEffect(() => {
     setDrawerOptions([
       { icon: "fact_check", path: "/direct", label: "Escolher Gate" },
+      { icon: "fact_check", path: "/lista-agendamento", label: "Ultimos agendamentos" },
     ]);
   }, []);
 
@@ -20,7 +21,7 @@ export const AppRoutes = () => {
       <Route path="/direct" element={<Blog />} />
       <Route path="/update" element={<Update />} />
 
-      <Route path="*" element={<Navigate to="/direct" />} />
+      <Route path="*" element={<Navigate to="/cadastro-facial" />} />
     </Routes>
   );
 };

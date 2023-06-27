@@ -12,14 +12,14 @@ import StartIcon from '@mui/icons-material/Start';
 import LogoutIcon from '@mui/icons-material/Logout';
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
 
-
 import FeaturedPost from "./FeaturedPost";
 
+// Obtém a data atual
 const currentDate = new Date();
 const month = currentDate.toLocaleString("default", { month: "short" });
 const day = currentDate.getDate();
 
-
+// Array de posts em destaque
 const featuredPosts = [
   {
     title: "GATE ENTRADA",
@@ -48,16 +48,16 @@ const defaultTheme = createTheme();
 export const Blog = () => {
   return (
     <LayoutBaseDePagina titulo="TIPO DE GATE">
-        <Container maxWidth="lg">
-          <main>
-            <Grid container spacing={4}>
-              {featuredPosts.map((post) => (
-                <FeaturedPost key={post.title} post={post} />
-              ))}
-            </Grid>
-            <Grid container spacing={5} sx={{ mt: 3 }}></Grid>
-          </main>
-        </Container>
+      <Container maxWidth="lg">
+        <main>
+          <Grid container spacing={4}>
+            {featuredPosts.map((post) => (
+              <FeaturedPost key={post.title} post={post} />
+            ))}
+          </Grid>
+          <Grid container spacing={5} sx={{ mt: 3 }}></Grid>
+        </main>
+      </Container>
     </LayoutBaseDePagina>
   );
 };

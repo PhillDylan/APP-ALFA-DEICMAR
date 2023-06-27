@@ -3,8 +3,15 @@ import { Api } from '../axios-config';
 
 export interface IListagemCidade {
   id: number;
-  idagendamento: string;
-  idoperador?: string;
+  Agendamento?: string;
+  ID_Operador?: string;
+  LACRE?: string;
+  CNH_Motorista?: string;
+  Nome_Motorista?: string;
+  CPF_Motorista?: string;
+  Serviço?: string;
+  Placa_TRAS: string;
+  Placa_FRENTE: string;
 }
 
 
@@ -20,6 +27,12 @@ export interface IDetalheCidade {
     numerodolacre: string;
     tipo_lacre: string;
   };
+  cnh: string;
+  nomemotorista: string;
+  service_name: string;
+  trailer_vehicle: string;
+  vehicle: string;
+  idmotorista: string;
 }
 
 

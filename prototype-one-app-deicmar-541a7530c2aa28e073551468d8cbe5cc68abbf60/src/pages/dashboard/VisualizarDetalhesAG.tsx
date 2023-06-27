@@ -42,7 +42,7 @@ export const ListagemDeCidades: React.FC = () => {
             console.log(result);
 
             setTotalCount(result.totalCount);
-            setRows(result.data.map(item => ({ id: item.id, idagendamento: item.idagendamento })));
+            setRows(result.data.map(item => ({ id: item.id, Placa_TRAS: item.trailer_vehicle, Placa_FRENTE: item.vehicle  })));
           }
         });
     });
@@ -86,7 +86,7 @@ export const ListagemDeCidades: React.FC = () => {
                     <Icon>edit</Icon>
                   </IconButton>
                 </TableCell>
-                <TableCell>{row.idagendamento}</TableCell>
+                <TableCell>{row.Placa_TRAS}</TableCell>
               </TableRow>
             ))}
           </TableBody>

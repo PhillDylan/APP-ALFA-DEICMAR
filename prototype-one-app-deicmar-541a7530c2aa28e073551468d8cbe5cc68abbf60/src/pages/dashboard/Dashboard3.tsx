@@ -47,6 +47,7 @@ import { Enviroment } from "../../shared/environment";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { MotionPhotosAuto } from "@mui/icons-material";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -184,13 +185,33 @@ async function processItems(listaItens: any[]) {
   var agendamento: any = sendNullValues ? "null" : dadosFetch?.data[numero].id;
   var nomeoperador: any = sendNullValues ? "null"  : Cookies.get(COOKIE_KEY__NOME_OPERADOR);
   var idoperador: any = sendNullValues ? "null" : Cookies.get(COOKIE_KEY__ID_OPERADOR);
-
+  var MotoristaCPF: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.driver.cpf;
+  var MotoristaNome: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.driver.name;
+  var MotoristaCNH: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.driver.license_number;
+  var CargoTrailer_Vehicle: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.trailer_vehicle;
+  var CargoVehicle: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.vehicle;
+  var CargoYard_Name: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.yard_name;
+  var CargoService: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.cargo[0].service_name;
+  var CargoType: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.cargo[0].cargo_type;
+  var CargoIn_or_out: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.cargo[0].in_or_out;
+  var cargo_number: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.cargo[0].cargo_number;
+  console.log("feshfuiawehfiuaswhegiuear",dadosFetch)
    formData.append("hora", hora);
    formData.append("guide", guide);
    formData.append("tipolacre", tipolacre);
    formData.append("agendamento", agendamento);
    formData.append("nomeoperador", nomeoperador);
    formData.append("idoperador", idoperador); 
+   formData.append("motoristaInformationCPF", MotoristaCPF)
+   formData.append("motoristaInformationNOME", MotoristaNome)
+   formData.append("motoristaInformationCNH", MotoristaCNH)
+   formData.append("cargoInformationCargoTrailer_Vehicle", CargoTrailer_Vehicle)
+   formData.append("cargoInformationCargoVehicle", CargoVehicle)
+   formData.append("cargoInformationCargoYard_Name", CargoYard_Name)
+   formData.append("cargoInformationCargoService", CargoService)
+   formData.append("cargoInformationCargoType", CargoType)
+   formData.append("cargoInformationCargoIn_or_out", CargoIn_or_out)
+   formData.append("cargoInformationCargo_number", cargo_number)
 
 
   return formData
@@ -214,6 +235,16 @@ async function exampleFunction() {
         Lacres:"null",
         Operador: Cookies.get(COOKIE_KEY__NOME_OPERADOR),
         ID_Operador: Cookies.get(COOKIE_KEY__ID_OPERADOR),
+        MotoristaCPF:  dadosFetch?.data[numero].data.driver.cpf,
+        MotoristaNome:  dadosFetch?.data[numero].data.driver.name,
+        MotoristaCNH:  dadosFetch?.data[numero].data.driver.license_number,
+        CargoTrailer_Vehicle:  dadosFetch?.data[numero].data.trailer_vehicle,
+        CargoVehicle:  dadosFetch?.data[numero].data.vehicle,
+        CargoYard_Name:  dadosFetch?.data[numero].data.yard_name,
+        CargoService:  dadosFetch?.data[numero].data.cargo[0].service_name,
+        CargoType:  dadosFetch?.data[numero].data.cargo[0].cargo_type,
+        CargoIn_or_out:  dadosFetch?.data[numero].data.cargo[0].in_or_out,
+        cargo_number:  dadosFetch?.data[numero].data.cargo[0].cargo_number
     };
   
       // Se dadosFetch.data.obj.container for falso, enviar o objeto nullObject

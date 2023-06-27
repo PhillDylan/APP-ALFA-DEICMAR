@@ -101,13 +101,6 @@ export const Dashboard = () => {
 
   const [touchCount, setTouchCount] = useState(0);
 
-  useEffect(() => {
-    // Verificar se dadosFetch é null ou undefined
-    if (!dadosFetch) {
-      navigate("/agendamento2", { replace: true });
-      return;
-    }
-  }, [dadosFetch]);
 
   useEffect(() => {
     const handleTouchMove = () => {
@@ -130,6 +123,13 @@ export const Dashboard = () => {
   }, []);
 
 
+  useEffect(() => {
+    // Verificar se dadosFetch é null ou undefined
+    if (!dadosFetch) {
+      navigate("/agendamento2", { replace: true });
+      return;
+    }
+  }, [dadosFetch]);
 
   const ValidadorCPF = (cpf: any) => {
     // inicia as variaveis que serão ultilizadas no codigo

@@ -10,91 +10,90 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useNavigate } from 'react-router-dom';
 
-const secretKey = "sua_chave_de_criptografia";
-const iv = CryptoJS.enc.Hex.parse('00000000000000000000000000000000'); // IV fixo
+const secretKey = "sua_chave_de_criptografia"; // Chave de criptografia usada para criptografar e descriptografar dados sensíveis
+const iv = CryptoJS.enc.Hex.parse('00000000000000000000000000000000'); // IV fixo (Inicialização do Vetor)
 
 interface ICadastroSenhaProps {
-  email: string;
+  email: string; // Propriedade recebida pelo componente para o e-mail do usuário
 }
 
-export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => {
-  const { login } = useAuthContext();
-  const [isLoading, setIsLoading] = useState(false);
-  const [passwordError, setPasswordError] = useState('');
-  const [password, setPassword] = useState('');
-  const [open, setOpen] = useState(false);
-  const [severity, setSeverity] = useState('');
+export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => { // Componente CadastroSenha que recebe a prop email
+  const { login } = useAuthContext(); // Hook personalizado de contexto para autenticação
+  const [isLoading, setIsLoading] = useState(false); // Estado para controlar o carregamento
+  const [passwordError, setPasswordError] = useState(''); // Estado para armazenar mensagens de erro de senha
+  const [password, setPassword] = useState(''); // Estado para armazenar a senha digitada pelo usuário
+  const [open, setOpen] = useState(false); // Estado para controlar a exibição do Alerta de sucesso ou erro
+  const [severity, setSeverity] = useState(''); // Estado para definir o tipo de alerta (sucesso ou erro)
 
-  const COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
-  const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+  const COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR'; // Chave para o cookie do ID do operador
+  const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN'; // Chave para o cookie do token de acesso
 
-  const handleFetchResult = (sucesso: boolean, mensagem: string) => {
-    setSeverity(sucesso ? 'success' : 'error');
-    setOpen(true);
+  const handleFetchResult = (sucesso: boolean, mensagem: string) => { // Função para lidar com o resultado do cadastro da nova senha
+    setSeverity(sucesso ? 'success' : 'error'); // Define a gravidade do alerta como 'success' se sucesso for verdadeiro, caso contrário, 'error'
+    setOpen(true); // Abre o Alerta
   };
 
   const handleNavegar = () => {
-    window.location.href = '/direct';
+    window.location.href = '/direct'; // Navega para a página '/direct'
   };
 
-  const encrypt = (data: string): string => {
+  const encrypt = (data: string): string => { // Função para criptografar dados
     const derivedKey = CryptoJS.PBKDF2(secretKey, iv, { keySize: 256 / 32, iterations: 100 }); // Chave derivada do IV
-    const encryptedData = CryptoJS.AES.encrypt(data, derivedKey, { iv }).toString();
-    return encryptedData;
+    const encryptedData = CryptoJS.AES.encrypt(data, derivedKey, { iv }).toString(); // Criptografa os dados usando a chave derivada e o IV
+    return encryptedData; // Retorna os dados criptografados
   };
 
-  const decrypt = (encryptedData: string): string => {
+  const decrypt = (encryptedData: string): string => { // Função para descriptografar dados
     const derivedKey = CryptoJS.PBKDF2(secretKey, iv, { keySize: 256 / 32, iterations: 100 }); // Chave derivada do IV
-    const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, derivedKey, { iv });
-    const decryptedData = decryptedBytes.toString(CryptoJS.enc.Utf8);
-    return decryptedData;
+    const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, derivedKey, { iv }); // Descriptografa os dados usando a chave derivada e o IV
+    const decryptedData = decryptedBytes.toString(CryptoJS.enc.Utf8); // Converte os bytes descriptografados em uma string UTF-8
+    return decryptedData; // Retorna os dados descriptografados
   };
 
-
-  const handleSubmit = () => {
-    if (password.length < 5) {
-      setPasswordError('A senha deve ter pelo menos 5 caracteres');
-      return;
+  const handleSubmit = () => { // Função para lidar com o envio do formulário de cadastro da nova senha
+    if (password.length < 5) { // Verifica se a senha tem pelo menos 5 caracteres
+      setPasswordError('A senha deve ter pelo menos 5 caracteres'); // Define a mensagem de erro para a senha
+      return; // Retorna se a validação falhar
     }
-    setIsLoading(true);
-    Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
+    setIsLoading(true); // Define isLoading como true para mostrar o carregamento
+    Cookies.remove(COOKIE_KEY__ACCESS_TOKEN); // Remove o cookie do token de acesso
 
     // Fazer a requisição para cadastrar nova senha e obter o access_token
 
     // Exemplo fictício:
-    const username = Enviroment.USERNAME;
-    const userPassword = Enviroment.PASSWORD;
-    const token = btoa(`${username}:${userPassword}`);
-    const concatenatedData = `${email}:${password}`; // Use a senha original, não o hash
-    const encryptedData = encrypt(concatenatedData);
-    const dataToSend = `cripto: ${encryptedData}, user: ${Cookies.get(COOKIE_KEY__ID_OPERADOR)}`;
-    fetch(`${Enviroment.URL_BASE}/updatepassword`, {
+    const username = Enviroment.USERNAME; // Obtém o nome de usuário do ambiente
+    const userPassword = Enviroment.PASSWORD; // Obtém a senha do usuário do ambiente
+    const token = btoa(`${username}:${userPassword}`); // Codifica o nome de usuário e senha em Base64
+    const concatenatedData = `${email}:${password}`; // Concatena o e-mail e a senha
+    const encryptedData = encrypt(concatenatedData); // Criptografa os dados concatenados
+    const dataToSend = `cripto: ${encryptedData}, user: ${Cookies.get(COOKIE_KEY__ID_OPERADOR)}`; // Prepara os dados para enviar
+    fetch(`${Enviroment.URL_BASE}/updatepassword`, { // Faz uma solicitação POST para a rota de atualização de senha
       method: 'POST',
-      body: dataToSend,
-      headers: { Authorization: "Basic " + token },
+      body: dataToSend, // Envia os dados criptografados
+      headers: { Authorization: "Basic " + token }, // Define o cabeçalho de autorização com o token codificado em Base64
     })
-      .then((response) => response.json())
+      .then((response) => response.json()) // Converte a resposta em JSON
       .then((data) => {
         // Salvar o access_token no cookie
-        Cookies.set(COOKIE_KEY__ACCESS_TOKEN, data.access_token, { expires: Enviroment.DIAS_EXPIRACAO });
+        Cookies.set(COOKIE_KEY__ACCESS_TOKEN, data.access_token, { expires: Enviroment.DIAS_EXPIRACAO }); // Define o cookie do token de acesso com a data de expiração
 
         // Fazer o login com o novo access_token
-        login(email, password)
+        login(email, password) // Chama a função de login com o e-mail e a senha
           .then(() => {
-            setIsLoading(false);
-            handleFetchResult(true, 'Senha cadastrada com sucesso');
-            handleNavegar()
+            setIsLoading(false); // Define isLoading como false para ocultar o carregamento
+            handleFetchResult(true, 'Senha cadastrada com sucesso'); // Lida com o resultado do cadastro da nova senha
+            handleNavegar(); // Navega para a página '/direct'
           });
       })
       .catch((error) => {
-        setIsLoading(false);
-        handleFetchResult(false, 'Erro ao cadastrar nova senha');
+        setIsLoading(false); // Define isLoading como false para ocultar o carregamento
+        handleFetchResult(false, 'Erro ao cadastrar nova senha'); // Lida com o resultado do cadastro da nova senha
       });
-          // Limpe o erro de senha se a validação for bem-sucedida
-    setPasswordError('');
+      
+    setPasswordError(''); // Limpa o erro de senha se a validação for bem-sucedida
   };
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Estado para controlar a visibilidade da senha
 
   return (
     <Box height="100vh" display="flex" justifyContent="center" alignItems="center">
@@ -142,7 +141,7 @@ export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => {
                   color="inherit"
                   size="small"
                   onClick={() => {
-                    setOpen(false);
+                    setOpen(false); // Fecha o Alerta
                   }}
                 >
                   <CloseIcon fontSize="inherit" />

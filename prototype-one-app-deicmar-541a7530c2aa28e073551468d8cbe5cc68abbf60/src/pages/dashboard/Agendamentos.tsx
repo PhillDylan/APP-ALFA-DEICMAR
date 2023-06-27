@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Icon, IconButton, LinearProgress, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Icon, IconButton, LinearProgress, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { IListagemCidade, CidadesService } from '../../shared/services/api/cidades/CidadesService';
@@ -7,12 +7,8 @@ import { FerramentasDaListagem } from '../../shared/components';
 import { LayoutBaseDePagina } from '../../shared/layouts';
 import { Enviroment } from '../../shared/environment';
 import { useDebounce } from '../../shared/hooks';
-import { useTheme } from '@mui/material/styles'; // Importe o useTheme
+import { useTheme } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
-
-
-
-
 
 export const ListagemDeCidades: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -24,14 +20,17 @@ export const ListagemDeCidades: React.FC = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
-  const theme = useTheme(); // Obtenha o tema atual
+  const [showTable, setShowTable] = useState(true); // Estado para controlar qual componente renderizar
+  const [selectedRow, setSelectedRow] = useState<IListagemCidade | null>(null); // Estado para armazenar a linha selecionada
+  const theme = useTheme();
+
   const busca = useMemo(() => {
     return searchParams.get('busca') || '';
   }, [searchParams]);
+
   const pagina = useMemo(() => {
     return Number(searchParams.get('pagina') || '1');
   }, [searchParams]);
-
 
   const cellStyle = {
     background: theme.palette.mode !== 'dark'
@@ -47,53 +46,95 @@ export const ListagemDeCidades: React.FC = () => {
       CidadesService.getAll(pagina, busca)
         .then((result) => {
           setIsLoading(false);
-
+          
           if (result instanceof Error) {
             alert(result.message);
           } else {
-            console.log(result);
-
             setTotalCount(result.totalCount);
-            setRows(result.data.map(item => ({ id: item.id, idagendamento: item.idagendamento, idoperador: item.idoperador })));
+            setRows(result.data.map(item => ({
+              id: item.id,
+              Agendamento: item.idagendamento || '',
+              ID_Operador: item.idoperador || '',
+              LACRE: item.data.numerodolacre || '',
+              CNH_Motorista: item.cnh || '',
+              Nome_Motorista: item.nomemotorista || '',
+              CPF_Motorista: item.idmotorista || '',
+              Serviço: item.service_name || '',
+              Placa_TRAS: item.trailer_vehicle || '',
+              Placa_FRENTE: item.vehicle || '',
+            })));
           }
         });
     });
   }, [busca, pagina]);
-  
 
   const handleDelete = (id: number) => {
     setDeleteItemId(id);
     setIsDialogOpen(true);
   };
 
-  const handleEdit = (idagendamento: string) => {
-    dispatch({ type: 'SET_ID_AGENDAMENTO', payload: idagendamento }); // Adicione essa linha
-
-     // Navegar para o path desejado
-     navigate(`/cidades/detalhe/${idagendamento}`);
+  const handleEdit = (item: IListagemCidade) => {
+    setSelectedRow(item);
+    setShowTable(false);
   };
 
   const handleConfirmDelete = (id: number) => {
     setIsDialogOpen(false);
   };
+
+  const handleBack = () => {
+    setShowTable(true);
+    setSelectedRow(null);
+  };
+
+  if (!showTable && selectedRow) {
+    // Renderizar o componente com as informações da linha selecionada
+    return (
+      <LayoutBaseDePagina titulo='Detalhes'>
+        <TableContainer component={Paper} variant="outlined" sx={{ m: 1, width: 'auto' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={cellStyle}>Propriedade</TableCell>
+                <TableCell sx={cellStyle}>Informação</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Object.entries(selectedRow).map(([key, value]) => {
+                // Ignorar a propriedade 'id'
+                if (key === 'id') return null;
   
+                return (
+                  <TableRow key={key}>
+                    <TableCell sx={cellStyle}>{key.replace(/_/g, ' ')}</TableCell>
+                    <TableCell sx={cellStyle}>{value}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Grid sx={{ m: 1, width: 'auto', textAlign: 'center' }}>
+          <Button sx={{ m: 1, border: '10px' }} variant="contained" onClick={handleBack}>Voltar</Button>
+        </Grid>
+      </LayoutBaseDePagina>
+    );
+  }
 
   return (
-    <LayoutBaseDePagina
-      titulo='Listagem Checklist'
-    >
+    <LayoutBaseDePagina titulo='Listagem Checklist'>
       <TableContainer component={Paper} variant="outlined" sx={{ m: 1, width: 'auto' }}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell width={100} sx={cellStyle}>
-                Ações
+                INFO
               </TableCell>
               <TableCell sx={cellStyle}>
-                ID Agendamento
+                Placa FRENTE
               </TableCell>
               <TableCell sx={cellStyle}>
-                ID Operador
+                Placa TRAS
               </TableCell>
             </TableRow>
           </TableHead>
@@ -101,15 +142,15 @@ export const ListagemDeCidades: React.FC = () => {
             {rows.map(row => (
               <TableRow key={row.id}>
                 <TableCell sx={cellStyle}>
-                  <IconButton size="small" onClick={() => handleEdit(row.idagendamento)}>
-                    <Icon>edit</Icon>
+                  <IconButton size="small" onClick={() => handleEdit(row)}>
+                    <Icon>assignment</Icon>
                   </IconButton>
                 </TableCell>
                 <TableCell sx={cellStyle}>
-                  {row.idagendamento}
+                  {row.Placa_FRENTE}
                 </TableCell>
                 <TableCell sx={cellStyle}>
-                  {row.idoperador}
+                 {row.Placa_TRAS}
                 </TableCell>
               </TableRow>
             ))}

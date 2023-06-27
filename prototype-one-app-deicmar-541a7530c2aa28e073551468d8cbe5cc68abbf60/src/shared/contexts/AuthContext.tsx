@@ -4,16 +4,20 @@ import Cookies from 'js-cookie';
 import { AuthService } from '../services/api/auth/AuthService';
 import { Enviroment } from '../environment';
 
+// Definindo a estrutura dos dados do contexto de autenticação
 interface IAuthContextData {
-  logout: () => void;
-  isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<string | void>;
+  logout: () => void; // Função para fazer logout
+  isAuthenticated: boolean; // Flag para indicar se o usuário está autenticado
+  login: (email: string, password: string) => Promise<string | void>; // Função para fazer login
 }
 
+// Criando o contexto de autenticação
 const AuthContext = createContext({} as IAuthContextData);
 
-const COOKIE_EXPIRATION_DAYS = Enviroment.DIAS_EXPIRACAO; // Expiração de 1 dia em dias
+// Duração do cookie em dias
+const COOKIE_EXPIRATION_DAYS = Enviroment.DIAS_EXPIRACAO;
 
+// Chaves dos cookies
 const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
 const COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
 const COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
@@ -21,22 +25,24 @@ const COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
 const COOKIE_KEY__GATE = 'APP_GATE';
 const COOKIE_KEY__FIRST_ACCESS = 'APP_FIRST_ACCESS';
 
+// Props do componente AuthProvider
 interface IAuthProviderProps {
-  children: React.ReactNode;
+  children: React.ReactNode; // Conteúdo renderizado dentro do componente
 }
 
+// Componente AuthProvider
 export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
-  const [accessToken, setAccessToken] = useState<string>();
-  const [idOperador, setIdOperador] = useState<string>();
-  const [message, setMessage] = useState<string>();
-  const [nomeOperador, setNomeOperador] = useState<string>();
+  const [accessToken, setAccessToken] = useState<string>(); // Token de acesso (inicialmente vazio)
+  const [idOperador, setIdOperador] = useState<string>(); // ID do operador (inicialmente vazio)
+  const [message, setMessage] = useState<string>(); // Mensagem (inicialmente vazia)
+  const [nomeOperador, setNomeOperador] = useState<string>(); // Nome do operador (inicialmente vazio)
 
+  // Verificar os cookies ao carregar a página
   useEffect(() => {
     const accessToken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN);
     const idOperador = Cookies.get(COOKIE_KEY__ID_OPERADOR);
     const message = Cookies.get(COOKIE_KEY__MESSAGE);
     const nomeOperador = Cookies.get(COOKIE_KEY__NOME_OPERADOR);
-    const firstAccess = Cookies.get(COOKIE_KEY__FIRST_ACCESS);
 
     if (accessToken) {
       setAccessToken(accessToken);
@@ -52,20 +58,23 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     }
   }, []);
 
+  // Função para fazer login
   const handleLogin = useCallback(async (email: string, password: string) => {
     const result = await AuthService.auth(email, password);
     if (result instanceof Error) {
-      return result.message;
+      return result.message; // Retorna a mensagem de erro
     } else {
       const expires = new Date();
       expires.setDate(expires.getDate() + COOKIE_EXPIRATION_DAYS);
 
+      // Definindo os cookies com os dados da autenticação
       Cookies.set(COOKIE_KEY__ACCESS_TOKEN, result.accessToken, { expires });
       Cookies.set(COOKIE_KEY__ID_OPERADOR, result.idoperador, { expires });
       Cookies.set(COOKIE_KEY__MESSAGE, result.message, { expires });
       Cookies.set(COOKIE_KEY__NOME_OPERADOR, result.nomeoperador, { expires });
       Cookies.set(COOKIE_KEY__FIRST_ACCESS, result.first_access, { expires });
 
+      // Atualizando os estados com os dados da autenticação
       setAccessToken(result.accessToken);
       setIdOperador(result.idoperador);
       setMessage(result.message);
@@ -73,7 +82,9 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     }
   }, []);
 
+  // Função para fazer logout
   const handleLogout = useCallback(() => {
+    // Removendo os cookies e limpando os estados
     Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
     Cookies.remove(COOKIE_KEY__ID_OPERADOR);
     Cookies.remove(COOKIE_KEY__MESSAGE);
@@ -81,23 +92,26 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     Cookies.remove(COOKIE_KEY__GATE);
     Cookies.remove(COOKIE_KEY__FIRST_ACCESS);
     
-
     setAccessToken(undefined);
     setIdOperador(undefined);
     setMessage(undefined);
     setNomeOperador(undefined);
   }, []);
 
+  // Verificar se o usuário está autenticado
   const isAuthenticated = useMemo(() => !!accessToken, [accessToken]);
+
+  // Se o usuário não estiver autenticado, remover o cookie de acesso
   if (isAuthenticated === false) {
     Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
   }
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login: handleLogin, logout: handleLogout }}>
-      {children}
+      {children} {/* Renderizando os componentes filhos */}
     </AuthContext.Provider>
   );
 };
 
+// Hook para acessar o contexto de autenticação
 export const useAuthContext = () => useContext(AuthContext);

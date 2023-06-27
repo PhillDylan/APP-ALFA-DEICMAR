@@ -126,12 +126,8 @@ export const Dashboard5 = () => {
   };
 
   const handleFetchResultUpdate = (mensagem: any) => {
-     let mensagemComOperador = {
-      idOperador: idOperador,
-      nomeOperador: nomeOperador
-    }
     handleClickOpen();
-    dispatch({ type: "SET_DADOS_FETCH_UPDATE", payload: (mensagem + mensagemComOperador)});
+    dispatch({ type: "SET_DADOS_FETCH_UPDATE", payload: (mensagem)});
   };
 
   const handleClickOpen = () => {
@@ -153,6 +149,10 @@ export const Dashboard5 = () => {
 
   const handleFetchDialog = (mensagem: any) => {
     console.log('token');
+    let mensagemComOperador = {
+      idOperador: idOperador,
+      nomeOperador: nomeOperador
+    }
     const dados: any =  mensagem
     setStatusEnvio("enviando");
     const username = Enviroment.USERNAME;
@@ -167,11 +167,14 @@ export const Dashboard5 = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
+        data.operador = mensagemComOperador
         if (data.status === "success") {
           handleFetchResultUpdate(data);
           //navigate("/checklist");
-        } else {
-
+        } else if (data.message === "checklist não encontrado"){
+          navigate("/checklist");
+        }else {
+          navigate("/checklist");
         }
       })
       .catch((error) => {
@@ -240,12 +243,11 @@ export const Dashboard5 = () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Já consta no sistema um checklist para o agendamento atual deseja fazer um novo checklist para o agendameto ou atualizar o agendamento atual ?
+            Já consta no sistema um checklist para o agendamento atual deseja fazer um novo checklist para o agendameto ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Voltar</Button>
-          <Button onClick={handleUpdateCheck}>Atualizar checklist</Button>
           <Button onClick={handleNextcheck} autoFocus>
             Novo checklist
           </Button>

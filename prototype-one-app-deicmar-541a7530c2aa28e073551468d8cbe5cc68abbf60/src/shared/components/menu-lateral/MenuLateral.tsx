@@ -23,7 +23,7 @@ import { styled } from '@mui/system';
 import ipms from "../../../shared/assets/img/ipms.png"
 import ipms2 from "../../../shared/assets/img/ipms2.png"
 
-
+// Estilização personalizada para o Drawer
 const DrawerWithGradient = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': {
     ...(theme.palette.mode !== 'dark' && {
@@ -35,6 +35,7 @@ const DrawerWithGradient = styled(Drawer)(({ theme }) => ({
   },
 }));
 
+// Propriedades para um item de link do ListItem
 interface IListItemLinkProps {
   to: string;
   icon: string;
@@ -42,6 +43,7 @@ interface IListItemLinkProps {
   onClick: (() => void) | undefined;
 }
 
+// Componente para um item de link do ListItem
 const ListItemLink: React.FC<IListItemLinkProps> = ({
   to,
   icon,
@@ -75,6 +77,7 @@ interface IMenuLateral {
 
 export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
 
+  // Chaves dos cookies
   const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
   const COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
   const COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
@@ -82,9 +85,7 @@ export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
   const COOKIE_KEY__GATE = 'APP_GATE';
   const COOKIE_KEY__FIRST_ACCESS = 'APP_FIRST_ACCESS';
 
-
-
-
+  // Lendo os valores dos cookies
   const accessToken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN);
   const idOperador = Cookies.get(COOKIE_KEY__ID_OPERADOR);
   const message = Cookies.get(COOKIE_KEY__MESSAGE);
@@ -101,6 +102,7 @@ export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
 
   return (
     <>
+      {/* Drawer com gradiente */}
       <DrawerWithGradient
         open={isDrawerOpen}
         variant={smDown ? "temporary" : "permanent"}
@@ -119,6 +121,7 @@ export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
             alignItems="center"
             justifyContent="center"
           >
+            {/* Verifica o tema atual para exibir a imagem correta */}
             {theme.palette.mode === 'dark' ? (
               <img src={ipms2} style={{ width: theme.spacing(18), height: theme.spacing(18) }} alt="" />
             ) : (
@@ -142,12 +145,12 @@ export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
             </Grid>
           </Box>
 
-
           <Divider />
 
           <Box flex={1}>
             <nav aria-label="main mailbox folders">
               <List>
+                {/* Mapeia as opções do drawer */}
                 {drawerOptions.map((drawerOption) => (
                   <ListItemLink
                     key={drawerOption.path}
@@ -163,12 +166,14 @@ export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
           <Box>
             <nav aria-label="main mailbox folders">
               <List>
+                {/* Botão para alternar o tema */}
                 <ListItemButton onClick={toggleTheme}>
                   <ListItemIcon>
                     <Icon>dark_mode</Icon>
                   </ListItemIcon>
                   <ListItemText primary="Alternar tema" />
                 </ListItemButton>
+                {/* Botão para fazer logout */}
                 <ListItemButton onClick={logout}>
                   <ListItemIcon>
                     <Icon>logout</Icon>
@@ -179,7 +184,7 @@ export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
             </nav>
           </Box>
         </Box>
-        </DrawerWithGradient>
+      </DrawerWithGradient>
 
       <Box height="100vh" marginLeft={smDown ? 0 : theme.spacing(28)}>
         {children}

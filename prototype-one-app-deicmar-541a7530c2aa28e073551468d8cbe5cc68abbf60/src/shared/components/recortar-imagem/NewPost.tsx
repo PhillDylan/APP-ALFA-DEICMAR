@@ -4,26 +4,30 @@ import faceNotDetected from "../../assets/img/face_not_detected.jpg";
 import ReactLoading from "react-loading";
 import { Typography, useTheme } from "@mui/material";
 
+// Interface para as propriedades da imagem
 interface ImageProps {
-  url: string; // URL of the image
-  width: number; // Width of the image
-  height: number; // Height of the image
+  url: string; // URL da imagem
+  width: number; // Largura da imagem
+  height: number; // Altura da imagem
   newBlobUrl?: string;
 }
 
+// Interface para as propriedades do rosto detectado
 interface FriendsProps {
   face?: {
-    blobUrl: string; // URL of the detected face image
+    blobUrl: string; // URL da imagem do rosto detectado
     srcset: string;
   };
 }
 
+// Interface para a imagem enviada
 interface UpImage {
   url: string;
   width: number;
   height: number;
 }
 
+// Componente para criar uma nova postagem
 export const NewPost = ({
   image,
   handleResult,
@@ -39,6 +43,8 @@ export const NewPost = ({
   const croppedCanvasRef = useRef<HTMLCanvasElement>(null);
   const [showMessage, setShowMessage] = useState(false);
   const theme = useTheme();
+
+  // Função para lidar com a imagem e detectar os rostos
   const handleImage = async () => {
     if (imgRef.current) {
       const detections = await faceapi.detectAllFaces(
@@ -49,6 +55,7 @@ export const NewPost = ({
     }
   };
 
+  // Carregar os modelos de detecção de rosto e lidar com a imagem ao montar o componente
   useEffect(() => {
     const loadModels = async () => {
       await Promise.all([
@@ -63,6 +70,7 @@ export const NewPost = ({
     loadModels();
   }, []);
 
+  // Desenhar retângulos ao redor dos rostos detectados no canvas
   useEffect(() => {
     const drawFaces = () => {
       const canvas = canvasRef.current;
@@ -74,6 +82,7 @@ export const NewPost = ({
       }
     };
 
+    // Recortar e criar um novo canvas para o rosto detectado
     const drawCropped = () => {
       if (faces.length > 0) {
         var [x, y, w, h] = faces[0];
@@ -126,6 +135,7 @@ export const NewPost = ({
     drawCropped();
   }, [faces]);
 
+  // Configurar um timer para exibir uma mensagem se nenhum rosto for detectado
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!friends.face) {
@@ -161,7 +171,7 @@ export const NewPost = ({
             style={{ width: "295px", height: "412px" }}
           />
           <Typography>
-            <p>Sem rosto detectada</p>
+            <p>Sem rosto detectado</p>
           </Typography>
         </div>
       )}

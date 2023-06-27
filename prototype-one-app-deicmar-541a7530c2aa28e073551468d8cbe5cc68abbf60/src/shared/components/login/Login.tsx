@@ -9,7 +9,7 @@ import React from 'react';
 import Cookies from 'js-cookie';
 import { CadastroSenha } from './CadastroSenha';
 
-
+// Definição do schema de validação para o formulário de login
 const loginSchema = yup.object().shape({
   email: yup.string().required(),
   password: yup.string().required().min(5),
@@ -18,6 +18,7 @@ const loginSchema = yup.object().shape({
 interface ILoginProps {
   children: React.ReactNode;
 }
+
 export const Login: React.FC<ILoginProps> = ({ children }) => {
   const { isAuthenticated, login } = useAuthContext();
 
@@ -34,7 +35,7 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [redirectToNewPassword, setRedirectToNewPassword] = useState(false);
 
-
+  // Verifica se o e-mail contém espaços em branco
   React.useEffect(() => {
     if (email.trim().includes(' ')) {
       setEmailError('O Login não pode conter espaços em branco');
@@ -43,6 +44,7 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
     }
   }, [email]);
   
+  // Função para tratar o resultado da requisição de login
   const handleFetchResult = (sucesso: boolean, mensagem: string) => {
     setMensagemEnvio(mensagem);
     setSeverity(sucesso ? "success" : "error");
@@ -50,14 +52,13 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
     setOpen(true)
   };
 
+  // Função para lidar com o envio do formulário de login
   const handleSubmit = () => {
     setIsLoading(true);
   
     loginSchema
       .validate({ email, password }, { abortEarly: false })
       .then((dadosValidados) => {
-
-  
         login(dadosValidados.email, dadosValidados.password)
           .then(() => {
             setIsLoading(false);
@@ -82,14 +83,16 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
       });
   };
   
+  // Verifica se é necessário redirecionar para a página de cadastro de senha
   if (redirectToNewPassword) {
     return <CadastroSenha email={email} />;
   }
   
-
+  // Se o usuário estiver autenticado, exibe o conteúdo da página
   if (isAuthenticated) return (
     <>{children}</>
   );
+
 
   return (
     <Box width='100vw' height='100vh' display='flex' alignItems='center' justifyContent='center'>

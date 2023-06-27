@@ -16,32 +16,33 @@ import ipms from "../../shared/assets/img/ipms.png"
 import ipms2 from "../../shared/assets/img/ipms2.png"
 import bandeirantesDeicmar from "../../shared/assets/img/bandeirantesDeicmar.png"
 
-
+// Propriedades do componente LayoutBaseDePagina
 interface ILayoutBaseDePaginaProps {
-  children: ReactNode;
-  titulo: string;
-  barraDeFerramentas?: ReactNode;
+  children: ReactNode; // Conteúdo renderizado dentro do componente
+  titulo: string; // Título exibido no cabeçalho
+  barraDeFerramentas?: ReactNode; // Componente de barra de ferramentas opcional
 }
 
+// Componente LayoutBaseDePagina
 export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
   children,
   titulo,
   barraDeFerramentas,
 }) => {
-  // Media queries to determine screen size
+  // Media queries para determinar o tamanho da tela
   const smDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
   const mdDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
   const theme = useTheme();
 
-  // Accessing the app drawer context
+  // Acessando o contexto do drawer do aplicativo
   const { toggleDrawerOpen } = useAppDrawerContext();
 
   return (
     <Box
-      height="100%"
-      display="flex"
-      flexDirection="column"
-      gap={1}
+      height="100%" // Altura ocupando 100% da tela
+      display="flex" // Exibir os elementos em uma linha
+      flexDirection="column" // Alinhar os elementos verticalmente
+      gap={1} // Espaçamento entre os elementos
       sx={{
         "& > div": {
           "&::-webkit-scrollbar": { height: 10, WebkitAppearance: "none" },
@@ -52,7 +53,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
               theme.palette.mode === "dark" ? "" : "#E7EBF0",
             backgroundColor: "rgba(0 0 0 / 0.2)",
           },
-          // Adicione esta parte para aplicar o gradiente invertido nos boxes
+          // Aplicar um gradiente de fundo nos elementos
           background:
             theme.palette.mode !== "dark"
               ? "linear-gradient(to left, #DDE2E5, #FDFBFB 70%)"
@@ -62,28 +63,26 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
       }}
     >
 
-
-
 <Box
-  padding={1}
-  display="flex"
-  alignItems="center"
-  gap={1}
-  height={theme.spacing(smDown ? 6 : mdDown ? 8 : 12)}
-  component={Paper}
-  elevation={24}
+  padding={1} // Espaçamento interno
+  display="flex" // Exibir os elementos em uma linha
+  alignItems="center" // Alinhar os elementos verticalmente
+  gap={1} // Espaçamento entre os elementos
+  height={theme.spacing(smDown ? 6 : mdDown ? 8 : 12)} // Altura do elemento baseada no tamanho da tela
+  component={Paper} // Componente de papel para criar uma área retangular
+  elevation={24} // Elevação do componente
 >
   {smDown && (
     <IconButton color="primary" onClick={toggleDrawerOpen}>
-      <MenuIcon />
+      <MenuIcon /> {/* Ícone do menu */}
     </IconButton>
   )}
   <div style={{ flexGrow: 1 }}>
     <Typography
-      variant={smDown ? 'h6' : mdDown ? 'h6' : 'h3'}
-      style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
+      variant={smDown ? 'h6' : mdDown ? 'h6' : 'h3'} // Variação do texto com base no tamanho da tela
+      style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }} // Estilo do texto
     >
-      {titulo}
+      {titulo} {/* Título do cabeçalho */}
     </Typography>
   </div>
   <Grid container alignItems="center" justifyContent="flex-end">
@@ -95,10 +94,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
   </Grid>
 </Box>
 
-
-
-
-      {barraDeFerramentas && <Box>{barraDeFerramentas}</Box>}
+      {barraDeFerramentas && <Box>{barraDeFerramentas}</Box>} {/* Renderizar a barra de ferramentas, se existir */}
       <Box flex={1} overflow="auto"   sx={{
     color: theme.palette.text.secondary,
     backgroundImage: `linear-gradient(to right, ${
@@ -106,8 +102,8 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
     }, ${theme.palette.mode === "dark" ? "#282828" : "#EBEDEE"})`,
   }}>
         {" "}
-        {/* Creating a scrollable container */}
-        {children} {/* Rendering the child components */}
+        {/* Criando um contêiner com rolagem */}
+        {children} {/* Renderizando os componentes filhos */}
       </Box>
       <Grid
         container
@@ -116,12 +112,12 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
           justifyContent: "center",
           alignItems: "center",
         }}
-        component={Paper}
-        elevation={24}
+        component={Paper} // Componente de papel para criar uma área retangular
+        elevation={24} // Elevação do componente
       >
         <Grid item>
           <img src={bandeirantesDeicmar} style={{ width: "200px", height: "100%" }} alt="" />{" "}
-          {/* Displaying an image */}
+          {/* Exibindo uma imagem */}
         </Grid>
       </Grid>
     </Box>
