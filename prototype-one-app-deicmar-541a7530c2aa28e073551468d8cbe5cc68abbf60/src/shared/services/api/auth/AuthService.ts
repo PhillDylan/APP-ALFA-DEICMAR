@@ -1,4 +1,4 @@
-
+import Cookies from 'js-cookie';
 import CryptoJS from "crypto-js";
 import axios from 'axios';
 import { Enviroment } from '../../../environment';
@@ -36,7 +36,9 @@ const decrypt = (encryptedData: string): string => {
   const decryptedData = decryptedBytes.toString(CryptoJS.enc.Utf8);
   return decryptedData;
 };
-
+// Duração do cookie em dias
+const COOKIE_EXPIRATION_DAYS = Enviroment.DIAS_EXPIRACAO;
+const COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
 
 
 // Criando uma instância do Axios para realizar as chamadas à API
@@ -65,7 +67,10 @@ const auth = async (
 
     if (data) {
       console.log(data)
+      const expires = new Date();
+      expires.setDate(expires.getDate() + COOKIE_EXPIRATION_DAYS);
       // Retorna os dados de autenticação
+      Cookies.set(COOKIE_KEY__MESSAGE, data.message, { expires });
       return data;
     }
 

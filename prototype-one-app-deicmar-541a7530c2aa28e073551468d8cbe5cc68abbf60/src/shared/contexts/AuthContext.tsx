@@ -87,16 +87,12 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 
 const handleLogin = useCallback(async (email: string, password: string) => {
   const result = await AuthService.auth(email, password);
-  if(result.message){
-    const expires = new Date();
-    expires.setDate(expires.getDate() + COOKIE_EXPIRATION_DAYS);
-    Cookies.set(COOKIE_KEY__MESSAGE, result.message, { expires });
-  }
   if (result instanceof Error) {
     return result.message; // Retorna a mensagem de erro
   } else {
     const expires = new Date();
     expires.setDate(expires.getDate() + COOKIE_EXPIRATION_DAYS);
+    Cookies.set(COOKIE_KEY__MESSAGE, result.message, { expires });
     if (result.acessToken){
     // Decodificar o JWT para obter os dados adicionais
     const decodedToken: any = jwt_decode(result.acessToken);
@@ -122,8 +118,7 @@ const handleLogin = useCallback(async (email: string, password: string) => {
       setNomeOperador(nomeOperador);
     }
     }else{
-      Cookies.remove(COOKIE_KEY__MESSAGE);
-      Cookies.set(COOKIE_KEY__MESSAGE, result.message, { expires });
+
       handleLogout()
     }
   }

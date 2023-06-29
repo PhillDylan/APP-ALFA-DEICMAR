@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Box, Button, Card, CardActions, CardContent, CircularProgress, Collapse, Grid, IconButton, TextField, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuthContext } from '../../contexts';
@@ -9,6 +9,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const secretKey = "sua_chave_de_criptografia"; // Chave de criptografia usada para criptografar e descriptografar dados sensíveis
 const iv = CryptoJS.enc.Hex.parse('00000000000000000000000000000000'); // IV fixo (Inicialização do Vetor)
@@ -16,6 +18,14 @@ const iv = CryptoJS.enc.Hex.parse('00000000000000000000000000000000'); // IV fix
 interface ICadastroSenhaProps {
   email: string; // Propriedade recebida pelo componente para o e-mail do usuário
 }
+
+  // Estilos personalizados para o alerta
+  const alertStyle = {
+    background: 'green',
+    color: 'white',
+  };
+
+
 
 export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => { // Componente CadastroSenha que recebe a prop email
   const { login } = useAuthContext(); // Hook personalizado de contexto para autenticação
@@ -84,6 +94,7 @@ export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => { // 
           .then(() => {
             setIsLoading(false); // Define isLoading como false para ocultar o carregamento
             handleFetchResult(true, 'Senha cadastrada com sucesso'); // Lida com o resultado do cadastro da nova senha
+            toast.success('Senha cadastrada com sucesso', { style: alertStyle });
             handleNavegar(); // Navega para a página '/direct'
           });
       })

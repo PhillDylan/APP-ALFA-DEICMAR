@@ -39,6 +39,7 @@
     "crypto-browserify": "^3.12.0",
     "debounce": "^1.2.1",
     "face-api.js": "^0.22.2",
+    "formik": "^2.4.2",
     "heroicons": "^2.0.17",
     "image-compressor": "^2.0.3",
     "js-brasil": "^2.5.3",

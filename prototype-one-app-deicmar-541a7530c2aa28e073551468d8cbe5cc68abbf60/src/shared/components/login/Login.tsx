@@ -8,6 +8,14 @@ import { useAuthContext, useAppThemeContext } from '../../contexts';
 import React from 'react';
 import Cookies from 'js-cookie';
 import { CadastroSenha } from './CadastroSenha';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// Estilos personalizados para o alerta
+const alertStyle = {
+  background: 'green',
+  color: 'white',
+};
 
 
 // Definição do schema de validação para o formulário de login
@@ -70,6 +78,7 @@ const message = Cookies.get(COOKIE_KEY__MESSAGE);
         login(dadosValidados.email, dadosValidados.password)
           .then(() => {
             setIsLoading(false);
+            console.log(message)
             handleFetchResult(false, message);
             if (Cookies.get('APP_FIRST_ACCESS') === 'true') {
               setRedirectToNewPassword(true);
@@ -90,7 +99,7 @@ const message = Cookies.get(COOKIE_KEY__MESSAGE);
         });
       });
   };
-  
+
   // Verifica se é necessário redirecionar para a página de cadastro de senha
   if (redirectToNewPassword) {
     return <CadastroSenha email={email} />;
