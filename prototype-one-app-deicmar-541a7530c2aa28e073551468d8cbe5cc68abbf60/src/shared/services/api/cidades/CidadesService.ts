@@ -1,5 +1,5 @@
 import { Enviroment } from '../../../environment';
-import { Api } from '../axios-config';
+import { Api } from '../data/DataService';
 
 export interface IListagemCidade {
   id: number;

@@ -32,7 +32,7 @@ import { useNavigate } from "react-router-dom";
 import { Enviroment } from "../../shared/environment";
 import debounce from "lodash.debounce"; // Importe o debounce do pacote lodash.debounce
 import { RootState } from "./store";
-
+import Cookies from 'js-cookie';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -86,6 +86,8 @@ export const Dashboard = () => {
   const dadosFetch = useSelector((state: RootState) => state.dadosFetch);
   const numero = 1;  
 
+  const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+  const Accesstoken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN)
 
   const dispatch = useDispatch();
 
@@ -201,10 +203,13 @@ export const Dashboard = () => {
   useEffect(() => {
     const username = Enviroment.USERNAME;
     const password = Enviroment.PASSWORD;
+    // Codificando as credenciais para um token de autenticação
+
+
     const token = btoa(`${username}:${password}`);
     fetch(`${Enviroment.URL_BASE}/api/groupsid`, { //api/groupsid
       method: "GET",
-      headers: { Authorization: "Basic " + token },
+      headers: { Authorization: "Bearer " + Accesstoken  },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -539,7 +544,7 @@ const helperTextCPF = !ValidadorCPF(cpf) ? "Digite um CPF válido" : mensagemCPF
                     const cpfSemCaracteres = removeCaracteresCPF(cpf);
                     fetch(`${Enviroment.URL_BASE}/api/cadastro`, {
                       method: "POST",
-                      headers: { Authorization: "Basic " + token },
+                      headers: {Authorization: "Bearer " + Accesstoken  },
                       body: JSON.stringify({
                         nome,
                         sobrenome,

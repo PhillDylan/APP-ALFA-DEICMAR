@@ -42,6 +42,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 
 
+
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 
@@ -106,6 +107,12 @@ export const Dashboard5 = () => {
   const idOperador = Cookies.get(COOKIE_KEY__ID_OPERADOR);
   const nomeOperador = Cookies.get(COOKIE_KEY__NOME_OPERADOR);
 
+    
+
+  const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+  const Accesstoken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN)
+
+
   // Estilos personalizados para o alerta
   const alertStyle = {
     background: 'green',
@@ -161,7 +168,7 @@ export const Dashboard5 = () => {
     console.log('token2');
     fetch(`${Enviroment.URL_BASE}/checklist`, {
       method: "POST",
-      headers: { Authorization: "Basic " + token },
+      headers: {   Authorization: "Bearer " + Accesstoken },
       body: dados.data[1].id,
     })
       .then((response) => response.json())
@@ -308,7 +315,7 @@ export const Dashboard5 = () => {
                       const gate = Cookies.get(COOKIE_KEY__GATE);
                       fetch(`${Enviroment.URL_BASE}/numeroplaca`, {
                         method: "POST",
-                        headers: { Authorization: "Basic " + token },
+                        headers: {   Authorization: "Bearer " + Accesstoken  },
                         body: JSON.stringify(`placa:${lacre}, gate:${gate}`),
                       })
                         .then((response) => response.json())

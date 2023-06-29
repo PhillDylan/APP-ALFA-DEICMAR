@@ -48,7 +48,7 @@ import { Enviroment } from "../../shared/environment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { MotionPhotosAuto } from "@mui/icons-material";
-
+    
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -93,6 +93,11 @@ export const Dashboard3 = () => {
   const numero = 1;
   const [statusEnvio, setStatusEnvio] = useState("certo");
 
+
+
+  const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+  const Accesstoken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN)
+ 
 
   // Estilos personalizados para o alerta
   const alertStyle = {
@@ -257,7 +262,7 @@ async function exampleFunction() {
       var options: any = {
         method: "POST",
         headers: {
-          Authorization: "Basic " + token,
+          Authorization: "Bearer " + Accesstoken 
 
         },
         body: formData,

@@ -31,7 +31,8 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import debounce from "lodash.debounce"; // Importe o debounce do pacote lodash.debounce
-
+    
+  import Cookies from 'js-cookie';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -78,6 +79,11 @@ export const Dashboard2 = () => {
   const dadosFetch = useSelector((state: RootState) => state.dadosFetch);
   const [touchCount, setTouchCount] = useState(0);
   const navigate = useNavigate();
+
+
+  const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+  const Accesstoken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN)
+
   useEffect(() => {
     const handleTouchMove = () => {
       setTouchCount((prevCount) => prevCount + 1);

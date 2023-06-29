@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 
 import { AuthService } from '../services/api/auth/AuthService';
 import { Enviroment } from '../environment';
+import jwt_decode from 'jwt-decode';
 
 // Definindo a estrutura dos dados do contexto de autenticação
 interface IAuthContextData {
@@ -58,36 +59,83 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  // Função para fazer login
-  const handleLogin = useCallback(async (email: string, password: string) => {
-    const result = await AuthService.auth(email, password);
-    if (result instanceof Error) {
-      return result.message; // Retorna a mensagem de erro
-    } else {
-      const expires = new Date();
-      expires.setDate(expires.getDate() + COOKIE_EXPIRATION_DAYS);
+  // // Função para fazer login
+  // const handleLogin = useCallback(async (email: string, password: string) => {
+  //   const result = await AuthService.auth(email, password);
+  //   if (result instanceof Error) {
+  //     return result.message; // Retorna a mensagem de erro
+  //   } else {
+  //     const expires = new Date();
+  //     expires.setDate(expires.getDate() + COOKIE_EXPIRATION_DAYS);
 
-      // Definindo os cookies com os dados da autenticação
-      Cookies.set(COOKIE_KEY__ACCESS_TOKEN, result.accessToken, { expires });
-      Cookies.set(COOKIE_KEY__ID_OPERADOR, result.idoperador, { expires });
-      Cookies.set(COOKIE_KEY__MESSAGE, result.message, { expires });
-      Cookies.set(COOKIE_KEY__NOME_OPERADOR, result.nomeoperador, { expires });
-      Cookies.set(COOKIE_KEY__FIRST_ACCESS, result.first_access, { expires });
+  //     // Definindo os cookies com os dados da autenticação
+  //     Cookies.set(COOKIE_KEY__ACCESS_TOKEN, result.acessToken, { expires });
+  //     Cookies.set(COOKIE_KEY__ID_OPERADOR, result.idoperador, { expires });
+  //     Cookies.set(COOKIE_KEY__MESSAGE, result.message, { expires });
+  //     Cookies.set(COOKIE_KEY__NOME_OPERADOR, result.nomeoperador, { expires });
+  //     Cookies.set(COOKIE_KEY__FIRST_ACCESS, result.first_access, { expires });
 
-      // Atualizando os estados com os dados da autenticação
-      setAccessToken(result.accessToken);
-      setIdOperador(result.idoperador);
-      setMessage(result.message);
-      setNomeOperador(result.nomeoperador);
+  //     // Atualizando os estados com os dados da autenticação
+  //     setAccessToken(result.acessToken);
+  //     setIdOperador(result.idoperador);
+  //     setMessage(result.message);
+  //     setNomeOperador(result.nomeoperador);
+  //   }
+  // }, []);
+
+
+
+const handleLogin = useCallback(async (email: string, password: string) => {
+  const result = await AuthService.auth(email, password);
+  if(result.message){
+    const expires = new Date();
+    expires.setDate(expires.getDate() + COOKIE_EXPIRATION_DAYS);
+    Cookies.set(COOKIE_KEY__MESSAGE, result.message, { expires });
+  }
+  if (result instanceof Error) {
+    return result.message; // Retorna a mensagem de erro
+  } else {
+    const expires = new Date();
+    expires.setDate(expires.getDate() + COOKIE_EXPIRATION_DAYS);
+    if (result.acessToken){
+    // Decodificar o JWT para obter os dados adicionais
+    const decodedToken: any = jwt_decode(result.acessToken);
+
+    // Verificar se o token foi decodificado com sucesso e contém os dados esperados
+    if (decodedToken && typeof decodedToken === 'object') {
+      const idOperador = decodedToken.cpf;
+      const message = decodedToken.message;
+      const nomeOperador = decodedToken.name;
+      const firstAccess = decodedToken.first_access;
+
+      // Definir os cookies com os dados da autenticação
+      Cookies.set(COOKIE_KEY__ACCESS_TOKEN, result.acessToken, { expires });
+      Cookies.set(COOKIE_KEY__ID_OPERADOR, idOperador, { expires });
+      Cookies.set(COOKIE_KEY__MESSAGE, '', { expires });
+      Cookies.set(COOKIE_KEY__NOME_OPERADOR, nomeOperador, { expires });
+      Cookies.set(COOKIE_KEY__FIRST_ACCESS, firstAccess, { expires });
+
+      // Atualizar os estados com os dados da autenticação
+      setAccessToken(result.acessToken);
+      setIdOperador(idOperador);
+      setMessage(message);
+      setNomeOperador(nomeOperador);
     }
-  }, []);
+    }else{
+      Cookies.remove(COOKIE_KEY__MESSAGE);
+      Cookies.set(COOKIE_KEY__MESSAGE, result.message, { expires });
+      handleLogout()
+    }
+  }
+
+}, []);
+
 
   // Função para fazer logout
   const handleLogout = useCallback(() => {
     // Removendo os cookies e limpando os estados
     Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
     Cookies.remove(COOKIE_KEY__ID_OPERADOR);
-    Cookies.remove(COOKIE_KEY__MESSAGE);
     Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
     Cookies.remove(COOKIE_KEY__GATE);
     Cookies.remove(COOKIE_KEY__FIRST_ACCESS);

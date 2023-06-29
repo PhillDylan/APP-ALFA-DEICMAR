@@ -28,6 +28,8 @@ export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => { // 
   const COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR'; // Chave para o cookie do ID do operador
   const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN'; // Chave para o cookie do token de acesso
 
+  const Accesstoken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN)
+ 
   const handleFetchResult = (sucesso: boolean, mensagem: string) => { // Função para lidar com o resultado do cadastro da nova senha
     setSeverity(sucesso ? 'success' : 'error'); // Define a gravidade do alerta como 'success' se sucesso for verdadeiro, caso contrário, 'error'
     setOpen(true); // Abre o Alerta
@@ -56,21 +58,21 @@ export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => { // 
       return; // Retorna se a validação falhar
     }
     setIsLoading(true); // Define isLoading como true para mostrar o carregamento
-    Cookies.remove(COOKIE_KEY__ACCESS_TOKEN); // Remove o cookie do token de acesso
+    //Cookies.remove(COOKIE_KEY__ACCESS_TOKEN); // Remove o cookie do token de acesso
 
     // Fazer a requisição para cadastrar nova senha e obter o access_token
 
     // Exemplo fictício:
     const username = Enviroment.USERNAME; // Obtém o nome de usuário do ambiente
     const userPassword = Enviroment.PASSWORD; // Obtém a senha do usuário do ambiente
-    const token = btoa(`${username}:${userPassword}`); // Codifica o nome de usuário e senha em Base64
+    const token = btoa(`${email}:${password}`); // Codifica o nome de usuário e senha em Base64
     const concatenatedData = `${email}:${password}`; // Concatena o e-mail e a senha
     const encryptedData = encrypt(concatenatedData); // Criptografa os dados concatenados
-    const dataToSend = `cripto: ${encryptedData}, user: ${Cookies.get(COOKIE_KEY__ID_OPERADOR)}`; // Prepara os dados para enviar
+    const dataToSend = `cripto: ${token}, user: ${Cookies.get(COOKIE_KEY__ID_OPERADOR)}`; // Prepara os dados para enviar
     fetch(`${Enviroment.URL_BASE}/updatepassword`, { // Faz uma solicitação POST para a rota de atualização de senha
       method: 'POST',
       body: dataToSend, // Envia os dados criptografados
-      headers: { Authorization: "Basic " + token }, // Define o cabeçalho de autorização com o token codificado em Base64
+      headers: {   Authorization: "Bearer " + Accesstoken   }, // Define o cabeçalho de autorização com o token codificado em Base64
     })
       .then((response) => response.json()) // Converte a resposta em JSON
       .then((data) => {

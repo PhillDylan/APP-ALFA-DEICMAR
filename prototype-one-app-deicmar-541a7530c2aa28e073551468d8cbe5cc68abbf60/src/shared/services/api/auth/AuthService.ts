@@ -1,5 +1,7 @@
-import { Api } from "../axios-config";
+
 import CryptoJS from "crypto-js";
+import axios from 'axios';
+import { Enviroment } from '../../../environment';
 
 // Chave de criptografia
 const secretKey = "sua_chave_de_criptografia";
@@ -9,7 +11,7 @@ const iv = CryptoJS.enc.Hex.parse('00000000000000000000000000000000');
 
 // Interface que define a estrutura do objeto de autenticação
 interface IAuth {
-  accessToken: string;
+  acessToken: string;
   idoperador: string;
   message: string;
   nomeoperador: string;
@@ -35,6 +37,15 @@ const decrypt = (encryptedData: string): string => {
   return decryptedData;
 };
 
+
+
+// Criando uma instância do Axios para realizar as chamadas à API
+const Api = axios.create({
+  baseURL: Enviroment.URL_BASE_AUTH,
+
+});
+
+
 // Função de autenticação
 const auth = async (
   email: string,
@@ -42,14 +53,18 @@ const auth = async (
 ): Promise<IAuth | Error> => {
   try {
     // Concatena o email e a senha em uma única string
-    const concatenatedData = `${email}:${password}`; // Use a senha original, não o hash
+    //const concatenatedData = `${email}:${password}`; // Use a senha original, não o hash
+    const credetion = btoa(`${email}:${password}`);
     // Criptografa a string concatenada
-    const encryptedData = encrypt(concatenatedData);
+    //const encryptedData = encrypt(concatenatedData);
 
     // Faz uma requisição de autenticação usando o objeto `Api` importado
-    const { data } = await Api.postForm("/auth", { data: { encryptedData } });
+    const { data } = await Api.get("/api/auth/login", { headers: {
+      Authorization: "Basic " + credetion 
+      } });
 
     if (data) {
+      console.log(data)
       // Retorna os dados de autenticação
       return data;
     }

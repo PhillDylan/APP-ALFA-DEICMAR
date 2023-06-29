@@ -4,10 +4,11 @@ import * as yup from 'yup';
 import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { useAuthContext } from '../../contexts';
+import { useAuthContext, useAppThemeContext } from '../../contexts';
 import React from 'react';
 import Cookies from 'js-cookie';
 import { CadastroSenha } from './CadastroSenha';
+
 
 // Definição do schema de validação para o formulário de login
 const loginSchema = yup.object().shape({
@@ -45,12 +46,19 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
   }, [email]);
   
   // Função para tratar o resultado da requisição de login
-  const handleFetchResult = (sucesso: boolean, mensagem: string) => {
+  const handleFetchResult = (sucesso: boolean, mensagem: string | undefined) => {
+    if(mensagem){
     setMensagemEnvio(mensagem);
     setSeverity(sucesso ? "success" : "error");
     setErroEnvio(sucesso ? undefined : mensagem);
     setOpen(true)
+    }
   };
+
+const COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
+
+const message = Cookies.get(COOKIE_KEY__MESSAGE);
+
 
   // Função para lidar com o envio do formulário de login
   const handleSubmit = () => {
@@ -62,7 +70,7 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
         login(dadosValidados.email, dadosValidados.password)
           .then(() => {
             setIsLoading(false);
-            handleFetchResult(false, 'Login Incorreto');
+            handleFetchResult(false, message);
             if (Cookies.get('APP_FIRST_ACCESS') === 'true') {
               setRedirectToNewPassword(true);
               setIsLoading(false);
@@ -88,6 +96,12 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
     return <CadastroSenha email={email} />;
   }
   
+    // Se o usuário estiver autenticado, exibe o conteúdo da página
+    if (isAuthenticated) {
+      Cookies.remove(COOKIE_KEY__MESSAGE);
+    }
+
+
   // Se o usuário estiver autenticado, exibe o conteúdo da página
   if (isAuthenticated) return (
     <>{children}</>
