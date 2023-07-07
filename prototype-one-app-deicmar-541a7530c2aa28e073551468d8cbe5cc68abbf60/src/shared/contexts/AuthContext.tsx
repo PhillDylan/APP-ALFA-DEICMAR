@@ -93,6 +93,19 @@ const handleLogin = useCallback(async (email: string, password: string) => {
     const expires = new Date();
     expires.setDate(expires.getDate() + COOKIE_EXPIRATION_DAYS);
     Cookies.set(COOKIE_KEY__MESSAGE, result.message, { expires });
+     if (result.message === "Token invalido"){
+      let COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+      let COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
+      let COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
+      let COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
+      let COOKIE_KEY__GATE = 'APP_GATE';
+      let COOKIE_KEY__FIRST_ACCESS = 'APP_FIRST_ACCESS';
+      Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
+      Cookies.remove(COOKIE_KEY__ID_OPERADOR);
+      Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
+      Cookies.remove(COOKIE_KEY__GATE);
+      Cookies.remove(COOKIE_KEY__FIRST_ACCESS);
+    }
     if (result.acessToken){
     // Decodificar o JWT para obter os dados adicionais
     const decodedToken: any = jwt_decode(result.acessToken);

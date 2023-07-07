@@ -84,25 +84,25 @@ export const Dashboard2 = () => {
   const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
   const Accesstoken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN)
 
-  useEffect(() => {
-    const handleTouchMove = () => {
-      setTouchCount((prevCount) => prevCount + 1);
-    };
+  // useEffect(() => {
+  //   const handleTouchMove = () => {
+  //     setTouchCount((prevCount) => prevCount + 1);
+  //   };
   
-    document.addEventListener("touchend", handleTouchMove);
+  //   document.addEventListener("touchend", handleTouchMove);
   
-    const handleBeforeUnload = (event: { preventDefault: () => void; returnValue: string; }) => {
-      event.preventDefault();
-      event.returnValue = ''; // Some browsers require a return value for this property
-    };
+  //   const handleBeforeUnload = (event: { preventDefault: () => void; returnValue: string; }) => {
+  //     event.preventDefault();
+  //     event.returnValue = ''; // Some browsers require a return value for this property
+  //   };
   
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
   
-    return () => {
-      document.removeEventListener("touchend", handleTouchMove);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("touchend", handleTouchMove);
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
 
   useEffect(() => {
     // Verificar se dadosFetch é null ou undefined

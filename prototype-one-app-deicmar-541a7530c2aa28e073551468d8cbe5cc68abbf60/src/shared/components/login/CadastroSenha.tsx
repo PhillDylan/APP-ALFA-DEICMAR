@@ -86,6 +86,20 @@ export const CadastroSenha: React.FC<ICadastroSenhaProps> = ({ email }) => { // 
     })
       .then((response) => response.json()) // Converte a resposta em JSON
       .then((data) => {
+         if (data.message === "Token invalido!"){
+          let COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+          let COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
+          let COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
+          let COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
+          let COOKIE_KEY__GATE = 'APP_GATE';
+          let COOKIE_KEY__FIRST_ACCESS = 'APP_FIRST_ACCESS';
+          Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
+          Cookies.remove(COOKIE_KEY__ID_OPERADOR);
+          Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
+          Cookies.remove(COOKIE_KEY__GATE);
+          Cookies.remove(COOKIE_KEY__FIRST_ACCESS);
+          handleNavegar();
+        }
         // Salvar o access_token no cookie
         Cookies.set(COOKIE_KEY__ACCESS_TOKEN, data.access_token, { expires: Enviroment.DIAS_EXPIRACAO }); // Define o cookie do token de acesso com a data de expiração
 

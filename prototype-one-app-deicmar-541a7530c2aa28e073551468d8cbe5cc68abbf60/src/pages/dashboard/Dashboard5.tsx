@@ -155,7 +155,7 @@ export const Dashboard5 = () => {
 
 
   const handleFetchDialog = (mensagem: any) => {
-    console.log('token');
+    
     let mensagemComOperador = {
       idOperador: idOperador,
       nomeOperador: nomeOperador
@@ -165,7 +165,7 @@ export const Dashboard5 = () => {
     const username = Enviroment.USERNAME;
     const password = Enviroment.PASSWORD;
     const token = btoa(`${username}:${password}`);
-    console.log('token2');
+    
     fetch(`${Enviroment.URL_BASE}/checklist`, {
       method: "POST",
       headers: {   Authorization: "Bearer " + Accesstoken },
@@ -173,14 +173,27 @@ export const Dashboard5 = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         data.operador = mensagemComOperador
         if (data.status === "success") {
           handleFetchResultUpdate(data);
           //navigate("/checklist");
         } else if (data.message === "checklist não encontrado"){
           navigate("/checklist");
-        }else {
+        }
+       else if (data.message === "Token invalido!"){
+        let COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+        let COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
+        let COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
+        let COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
+        let COOKIE_KEY__GATE = 'APP_GATE';
+        let COOKIE_KEY__FIRST_ACCESS = 'APP_FIRST_ACCESS';
+        Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
+        Cookies.remove(COOKIE_KEY__ID_OPERADOR);
+        Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
+        Cookies.remove(COOKIE_KEY__GATE);
+        Cookies.remove(COOKIE_KEY__FIRST_ACCESS);
+        window.location.reload(); // Recarrega a página
+      }else {
           navigate("/checklist");
         }
       })
@@ -331,10 +344,24 @@ export const Dashboard5 = () => {
                             handleFetchResult(data);
                             handleFetchDialog(data);
                             toast.success(data.message, { style: alertStyle });
-                            console.log(data)
+                        
                             setStatusEnvio("pronto");
                             //navigate("/checklist");
-                          } else {
+                          }else if (data.message === "Token invalido!"){
+                            let COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+                            let COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
+                            let COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
+                            let COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
+                            let COOKIE_KEY__GATE = 'APP_GATE';
+                            let COOKIE_KEY__FIRST_ACCESS = 'APP_FIRST_ACCESS';
+                            Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
+                            Cookies.remove(COOKIE_KEY__ID_OPERADOR);
+                            Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
+                            Cookies.remove(COOKIE_KEY__GATE);
+                            Cookies.remove(COOKIE_KEY__FIRST_ACCESS);
+                            window.location.reload(); // Recarrega a página
+                          }
+                           else {
                             setSeverity("error");
                             setOpen(true);
                             setMensagemEnvio(data.message);

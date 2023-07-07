@@ -66,7 +66,6 @@ const auth = async (
       } });
 
     if (data) {
-      console.log(data)
       const expires = new Date();
       expires.setDate(expires.getDate() + COOKIE_EXPIRATION_DAYS);
       // Retorna os dados de autenticação

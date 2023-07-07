@@ -28,7 +28,7 @@ export const ListagemDeCidades: React.FC = () => {
     return searchParams.get('busca') || '';
   }, [searchParams]);
 
-  const pagina = useMemo(() => {
+  const pagina: any = useMemo(() => {
     return Number(searchParams.get('pagina') || '1');
   }, [searchParams]);
 
@@ -48,14 +48,14 @@ export const ListagemDeCidades: React.FC = () => {
           setIsLoading(false);
           
           if (result instanceof Error) {
-            alert(result.message);
           } else {
             setTotalCount(result.totalCount);
             setRows(result.data.map(item => ({
+              date: ` ${item.date.split("T")[0]} / ${item.hora.split(":")[0]}:${item.hora.split(":")[1]}:${item.hora.split(":")[2].split(".")[0]} ` || '',
               id: item.id,
               Agendamento: item.idagendamento || '',
-              ID_Operador: item.idoperador || '',
-              LACRE: item.data.numerodolacre || '',
+              Nome_Operador: item.nome || '',
+              LACRE: item.data?.join(', ') || '',
               CNH_Motorista: item.cnh || '',
               Nome_Motorista: item.nomemotorista || '',
               CPF_Motorista: item.idmotorista || '',
@@ -92,7 +92,7 @@ export const ListagemDeCidades: React.FC = () => {
     return (
       <LayoutBaseDePagina titulo='Detalhes'>
         <TableContainer component={Paper} variant="outlined" sx={{ m: 1, width: 'auto' }}>
-          <Table>
+          <Table sx={{ textTransform: 'uppercase' }}>
             <TableHead>
               <TableRow>
                 <TableCell sx={cellStyle}>Propriedade</TableCell>
@@ -124,10 +124,10 @@ export const ListagemDeCidades: React.FC = () => {
   return (
     <LayoutBaseDePagina titulo='Listagem Checklist'>
       <TableContainer component={Paper} variant="outlined" sx={{ m: 1, width: 'auto' }}>
-        <Table>
+        <Table  sx={{ textTransform: 'uppercase' }}>
           <TableHead>
             <TableRow>
-              <TableCell width={100} sx={cellStyle}>
+              <TableCell sx={cellStyle}>
                 INFO
               </TableCell>
               <TableCell sx={cellStyle}>
@@ -135,6 +135,9 @@ export const ListagemDeCidades: React.FC = () => {
               </TableCell>
               <TableCell sx={cellStyle}>
                 Placa TRAS
+              </TableCell>
+              <TableCell sx={cellStyle}>
+                Data
               </TableCell>
             </TableRow>
           </TableHead>
@@ -151,6 +154,9 @@ export const ListagemDeCidades: React.FC = () => {
                 </TableCell>
                 <TableCell sx={cellStyle}>
                  {row.Placa_TRAS}
+                </TableCell>
+                <TableCell sx={cellStyle}>
+                 {row.date}
                 </TableCell>
               </TableRow>
             ))}

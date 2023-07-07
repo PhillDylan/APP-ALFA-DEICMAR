@@ -29,6 +29,7 @@
     "@types/react-alert": "^7.0.2",
     "@unform/core": "^2.1.6",
     "axios": "^1.4.0",
+    "axios-extensions": "^3.1.6",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "blueimp-canvas-to-blob": "^3.29.0",

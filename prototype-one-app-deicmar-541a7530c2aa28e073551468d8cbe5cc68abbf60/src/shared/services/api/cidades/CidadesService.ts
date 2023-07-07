@@ -1,10 +1,11 @@
 import { Enviroment } from '../../../environment';
 import { Api } from '../data/DataService';
+import Cookies from 'js-cookie';
 
 export interface IListagemCidade {
   id: number;
   Agendamento?: string;
-  ID_Operador?: string;
+  Nome_Operador?: string;
   LACRE?: string;
   CNH_Motorista?: string;
   Nome_Motorista?: string;
@@ -12,6 +13,7 @@ export interface IListagemCidade {
   Serviço?: string;
   Placa_TRAS: string;
   Placa_FRENTE: string;
+  date?: string;
 }
 
 
@@ -21,14 +23,12 @@ export interface IDetalheCidade {
   id: number;
   idagendamento: string; // Adicione a propriedade 'nome' aqui
   idoperador: string; // Adicione a propriedade 'nome' aqui
-  data: {
-    data: string;
-    hora: string;
-    numerodolacre: string;
-    tipo_lacre: string;
-  };
+  data?: any;
+  date: string;
+  hora: string;
   cnh: string;
   nomemotorista: string;
+  nome: string
   service_name: string;
   trailer_vehicle: string;
   vehicle: string;
@@ -42,14 +42,37 @@ type TCidadesComTotalCount = {
   totalCount: number;
 }
 
+const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+
+
+
+// Codificando as credenciais para um token de autenticação
+const Accesstoken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN)
+
+const urlRelativa = `/ultimosagendamentos`;
+
+const config = {
+  headers: {
+    Authorization: "Bearer " + Accesstoken 
+  }
+};
 
 const getAll = async (page = 1, filter = '', id = ''): Promise<TCidadesComTotalCount | Error> => {
   try {
-    const urlRelativa = `/ultimosagendamentos`;
 
-    const { data, headers } = await Api.get(urlRelativa);
+    const accessToken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN);
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+
+
+    const { data, headers } = await Api.get(urlRelativa, config);
 
     if (data) {
+      console.log(data)
       return {
         data: data.response, // Ajuste aqui para acessar o array de objetos 'response'
         totalCount: Number(headers['x-total-count'] || Enviroment.LIMITE_DE_LINHAS),
@@ -66,7 +89,16 @@ const getAll = async (page = 1, filter = '', id = ''): Promise<TCidadesComTotalC
 
 const getById = async (id: number): Promise<IDetalheCidade | Error> => {
   try {
-    const { data } = await Api.get(`/ultimosagendamentos`);
+
+    const accessToken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN);
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+
+    const { data } = await Api.get(urlRelativa,config);
     if (data) {
       return data;
     }
@@ -80,9 +112,19 @@ const getById = async (id: number): Promise<IDetalheCidade | Error> => {
 
 const create = async (dados: Omit<IDetalheCidade, 'id'>): Promise<number | Error> => {
   try {
-    const { data } = await Api.post<IDetalheCidade>('/ultimosagendamentos', dados);
+
+        const accessToken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN);
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+
+    const { data } = await Api.post<IDetalheCidade>(urlRelativa, dados);
 
     if (data) {
+
       return data.id;
     }
 

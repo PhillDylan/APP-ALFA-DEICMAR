@@ -107,25 +107,25 @@ export const Dashboard3 = () => {
 
   const [touchCount, setTouchCount] = useState(0);
 
-  useEffect(() => {
-    const handleTouchMove = () => {
-      setTouchCount((prevCount) => prevCount + 1);
-    };
+  // useEffect(() => {
+  //   const handleTouchMove = () => {
+  //     setTouchCount((prevCount) => prevCount + 1);
+  //   };
   
-    document.addEventListener("touchend", handleTouchMove);
+  //   document.addEventListener("touchend", handleTouchMove);
   
-    const handleBeforeUnload = (event: { preventDefault: () => void; returnValue: string; }) => {
-      event.preventDefault();
-      event.returnValue = ''; // Some browsers require a return value for this property
-    };
+  //   const handleBeforeUnload = (event: { preventDefault: () => void; returnValue: string; }) => {
+  //     event.preventDefault();
+  //     event.returnValue = ''; // Some browsers require a return value for this property
+  //   };
   
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
   
-    return () => {
-      document.removeEventListener("touchend", handleTouchMove);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("touchend", handleTouchMove);
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
   
 
   useEffect(() => {
@@ -200,7 +200,6 @@ async function processItems(listaItens: any[]) {
   var CargoType: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.cargo[0].cargo_type;
   var CargoIn_or_out: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.cargo[0].in_or_out;
   var cargo_number: any = sendNullValues ? "null" : dadosFetch?.data[numero].data.cargo[0].cargo_number;
-  console.log("feshfuiawehfiuaswhegiuear",dadosFetch)
    formData.append("hora", hora);
    formData.append("guide", guide);
    formData.append("tipolacre", tipolacre);
@@ -273,17 +272,44 @@ async function exampleFunction() {
           if (response.ok) {
             return response.json();
           } else {
-            throw new Error("Erro ao enviar");
+            let COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+            let COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
+            let COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
+            let COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
+            let COOKIE_KEY__GATE = 'APP_GATE';
+            let COOKIE_KEY__FIRST_ACCESS = 'APP_FIRST_ACCESS';
+            Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
+            Cookies.remove(COOKIE_KEY__ID_OPERADOR);
+            Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
+            Cookies.remove(COOKIE_KEY__GATE);
+            Cookies.remove(COOKIE_KEY__FIRST_ACCESS);
+            window.location.reload(); // Recarrega a página
           }
         })
         .then((data) => {
+          console.log(data);
           setStatusEnvio("pronto");
           if (
             data.agendamento &&
             data.agendamento.message === "Agendamento cadastrado"
           ) {
-            toast.success(data.agendamento.message, { style: alertStyle });
+            toast.success("Checklist cadastrado", { style: alertStyle });
             navigate("/agendamento2");
+          }
+          
+          else if (data.message === "Token invalido!"){
+            let COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+            let COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
+            let COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
+            let COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
+            let COOKIE_KEY__GATE = 'APP_GATE';
+            let COOKIE_KEY__FIRST_ACCESS = 'APP_FIRST_ACCESS';
+            Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
+            Cookies.remove(COOKIE_KEY__ID_OPERADOR);
+            Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
+            Cookies.remove(COOKIE_KEY__GATE);
+            Cookies.remove(COOKIE_KEY__FIRST_ACCESS);
+            window.location.reload(); // Recarrega a página
           } else {
             setStatusEnvio("erro");
             setAlertSeverity("error");

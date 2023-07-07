@@ -77,9 +77,13 @@ const message = Cookies.get(COOKIE_KEY__MESSAGE);
       .then((dadosValidados) => {
         login(dadosValidados.email, dadosValidados.password)
           .then(() => {
+            // Aguardar a resolução da função login
+            // para garantir que o valor do cookie seja definido
             setIsLoading(false);
-            console.log(message)
-            handleFetchResult(false, message);
+            const message = Cookies.get(COOKIE_KEY__MESSAGE); // Obter o valor do cookie
+            if (message !== undefined) {
+              handleFetchResult(false, message);
+            }
             if (Cookies.get('APP_FIRST_ACCESS') === 'true') {
               setRedirectToNewPassword(true);
               setIsLoading(false);
@@ -99,6 +103,7 @@ const message = Cookies.get(COOKIE_KEY__MESSAGE);
         });
       });
   };
+  
 
   // Verifica se é necessário redirecionar para a página de cadastro de senha
   if (redirectToNewPassword) {

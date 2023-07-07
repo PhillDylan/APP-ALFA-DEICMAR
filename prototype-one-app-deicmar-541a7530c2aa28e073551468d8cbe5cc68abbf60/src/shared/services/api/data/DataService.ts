@@ -14,10 +14,7 @@ const Accesstoken = Cookies.get(COOKIE_KEY__ACCESS_TOKEN)
 
 // Criando uma instância do Axios para realizar as chamadas à API
 const Api = axios.create({
-  baseURL: Enviroment.URL_BASE,
-  headers: {
-    Authorization: "Bearer " + Accesstoken 
-  }
+  baseURL: Enviroment.URL_BASE
 });
 
 // Adicionando interceptors para manipulação das respostas e erros

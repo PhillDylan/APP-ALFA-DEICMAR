@@ -104,25 +104,25 @@ export const Dashboard = () => {
   const [touchCount, setTouchCount] = useState(0);
 
 
-  useEffect(() => {
-    const handleTouchMove = () => {
-      setTouchCount((prevCount) => prevCount + 1);
-    };
+  // useEffect(() => {
+  //   const handleTouchMove = () => {
+  //     setTouchCount((prevCount) => prevCount + 1);
+  //   };
   
-    document.addEventListener("touchend", handleTouchMove);
+  //   document.addEventListener("touchend", handleTouchMove);
   
-    const handleBeforeUnload = (event: { preventDefault: () => void; returnValue: string; }) => {
-      event.preventDefault();
-      event.returnValue = ''; // Some browsers require a return value for this property
-    };
+  //   const handleBeforeUnload = (event: { preventDefault: () => void; returnValue: string; }) => {
+  //     event.preventDefault();
+  //     event.returnValue = ''; // Some browsers require a return value for this property
+  //   };
   
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
   
-    return () => {
-      document.removeEventListener("touchend", handleTouchMove);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("touchend", handleTouchMove);
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
 
 
   useEffect(() => {
@@ -213,6 +213,20 @@ export const Dashboard = () => {
     })
       .then((response) => response.json())
       .then((data) => {
+         if (data.message === "Token invalido!"){
+          let COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+          let COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
+          let COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
+          let COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
+          let COOKIE_KEY__GATE = 'APP_GATE';
+          let COOKIE_KEY__FIRST_ACCESS = 'APP_FIRST_ACCESS';
+          Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
+          Cookies.remove(COOKIE_KEY__ID_OPERADOR);
+          Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
+          Cookies.remove(COOKIE_KEY__GATE);
+          Cookies.remove(COOKIE_KEY__FIRST_ACCESS);
+          window.location.reload(); // Recarrega a página
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -569,6 +583,20 @@ const helperTextCPF = !ValidadorCPF(cpf) ? "Digite um CPF válido" : mensagemCPF
                           setErroEnvio(undefined);
                           handleFetchResult(true, data.message);
                           navigate("/checklist");
+                        }
+                        else if (data.message === "Token invalido!"){
+                          let COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+                          let COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
+                          let COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
+                          let COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
+                          let COOKIE_KEY__GATE = 'APP_GATE';
+                          let COOKIE_KEY__FIRST_ACCESS = 'APP_FIRST_ACCESS';
+                          Cookies.remove(COOKIE_KEY__ACCESS_TOKEN);
+                          Cookies.remove(COOKIE_KEY__ID_OPERADOR);
+                          Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
+                          Cookies.remove(COOKIE_KEY__GATE);
+                          Cookies.remove(COOKIE_KEY__FIRST_ACCESS);
+                               window.location.reload(); // Recarrega a página
                         } else {
                           setSeverity("error");
                           setOpen(true);
@@ -577,7 +605,6 @@ const helperTextCPF = !ValidadorCPF(cpf) ? "Digite um CPF válido" : mensagemCPF
                           setErroEnvio(undefined);
                           handleFetchResult(false, data.message);
                           setEnviando(false);
-                          console.log(data)
                         }
                       })
                       .catch((error) => {
@@ -587,7 +614,6 @@ const helperTextCPF = !ValidadorCPF(cpf) ? "Digite um CPF válido" : mensagemCPF
                         setStatusEnvio("erro");
                         setErroEnvio(error.message);
                         setEnviando(false);
-
                       });
 
             }}

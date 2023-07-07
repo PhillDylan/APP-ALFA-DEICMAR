@@ -20,6 +20,8 @@ export const ListagemDeCidades: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
 
+  
+
   const busca = useMemo(() => {
     return searchParams.get('busca') || '';
   }, [searchParams]);
@@ -37,12 +39,11 @@ export const ListagemDeCidades: React.FC = () => {
           setIsLoading(false);
 
           if (result instanceof Error) {
-            alert(result.message);
+            
           } else {
-            console.log(result);
 
             setTotalCount(result.totalCount);
-            setRows(result.data.map(item => ({ id: item.id, Placa_TRAS: item.trailer_vehicle, Placa_FRENTE: item.vehicle  })));
+            setRows(result.data.map(item => ({ id: item.id, Placa_TRAS: item.trailer_vehicle, Placa_FRENTE: item.vehicle, date: `${item.date}:${item.hora}`  })));
           }
         });
     });

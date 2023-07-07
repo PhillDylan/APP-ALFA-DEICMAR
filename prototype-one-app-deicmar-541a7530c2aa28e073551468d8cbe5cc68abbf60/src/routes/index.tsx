@@ -7,7 +7,7 @@ export const AppRoutes = () => {
   useEffect(() => {
     setDrawerOptions([
       { icon: "fact_check", path: "/direct", label: "Escolher Gate" },
-      { icon: "fact_check", path: "/lista-agendamento", label: "Ultimos agendamentos" },
+      { icon: "fact_check", path: "/lista-checklists", label: "Ultimos checklists" },
     ]);
   }, []);
 
@@ -17,7 +17,7 @@ export const AppRoutes = () => {
       <Route path="/cadastro-lacre" element={<Dashboard2 />} />
       <Route path="/checklist" element={<Dashboard3 />} />
       <Route path="/agendamento2" element={<Dashboard5 />} />
-      <Route path="/lista-agendamento" element={<ListagemDeCidades />} />
+      <Route path="/lista-checklists" element={<ListagemDeCidades />} />
       <Route path="/direct" element={<Blog />} />
       <Route path="/update" element={<Update />} />
 
